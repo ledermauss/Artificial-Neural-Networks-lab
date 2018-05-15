@@ -7,8 +7,8 @@
 % Use *algorlm1* from Toledo. The script compares Levenberg-Marquardt "tarinlm" 
 % with quasi-Newton "trainbfg" algorihtms_
 %%
-x = 0:0.05:3*pi
-y = sin(x.^2)
+x = 0:0.05:3*pi;
+y = sin(x.^2);
 
 
 %% Choosing the best algorithm in terms of performance
@@ -16,6 +16,7 @@ y = sin(x.^2)
 neurons = [5, 10, 20, 40, 80];
 experiments = 20;
 algs = {'traingd', 'traingda', 'traincgf', 'traincgp', 'trainbfg' 'trainlm'}; 
+algs = {'trainlm'};
 res = zeros(length(neurons), 6, length(algs));
 
 i = 1;
@@ -36,7 +37,11 @@ for alg= algs
     i = i + 1;
 end
 %%
-NN5Neurons = NN1Hidden(5, alg, 1000, x, y, false, false);
+NN5Neurons = NN1Hidden(5, alg, 1000, x, y, false, true);
+%% 
+% DAVID: compara dos algoritmos en el segundo plot
+% : in the bayesian part, show that there is no validation (and thus it is
+% slower)
 NN10Neurons = NN1Hidden(10, alg, 1000, x, y, false, false);
 NN20Neurons = NN1Hidden(20, alg, 1000, x, y, false, false);
 NN40Neurons = NN1Hidden(80, alg, 1000, x, y, false, true);
