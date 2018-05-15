@@ -55,13 +55,19 @@ classdef NN1Hidden
         
         function [trainSet, simTrain] = simulateTrain(obj)
             trainSet = obj.xtrain;
-            simTrain = sim(obj.net, trainSetSet);
+            simTrain = sim(obj.net, trainSet);
         end
         
         function [m,b,R] = testRegression(obj)
             testSim = sim(obj.net, obj.xtest);
             testTarget = obj.ytest;
             [m, b, R] = postreg(testSim, testTarget);
+        end
+        
+         function [m,b,R] = trainRegression(obj)
+            trainSim = sim(obj.net, obj.xtrain);
+            trainTarget = obj.ytrain;
+            [m, b, R] = postreg(trainSim, trainTarget);
         end
     end
 end

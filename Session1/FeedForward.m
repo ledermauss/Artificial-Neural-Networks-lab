@@ -13,10 +13,11 @@ y = sin(x.^2);
 
 %% Choosing the best algorithm in terms of performance
 % setup
-neurons = [5, 10, 20, 40, 80];
+%neurons = [5, 10, 20, 40, 80, 100];
+neurons = [100, 120];
+
 experiments = 20;
 algs = {'traingd', 'traingda', 'traincgf', 'traincgp', 'trainbfg' 'trainlm'}; 
-algs = {'trainlm'};
 res = zeros(length(neurons), 6, length(algs));
 
 i = 1;
@@ -37,94 +38,63 @@ for alg= algs
     i = i + 1;
 end
 %%
-NN5Neurons = NN1Hidden(5, alg, 1000, x, y, false, true);
-%% 
+%% Optimal configs, gd and lm
 % DAVID: compara dos algoritmos en el segundo plot
 % : in the bayesian part, show that there is no validation (and thus it is
 % slower)
-NN10Neurons = NN1Hidden(10, alg, 1000, x, y, false, false);
-NN20Neurons = NN1Hidden(20, alg, 1000, x, y, false, false);
-NN40Neurons = NN1Hidden(80, alg, 1000, x, y, false, true);
-
-figure
-subplot(2,2,1)
-[~, ~, R5] = NN5Neurons.testRegression();
-subplot(2,2,2)
-[~, ~, R10] = NN10Neurons.testRegression();
-subplot(2,2,3)
-[~, ~, R20] = NN20Neurons.testRegression();
-subplot(2,2,4)
-[~, ~, R40] = NN40Neurons.testRegression();
-trainMSE = [NN5Neurons.trainMSE; NN10Neurons.trainMSE;
-    NN20Neurons.trainMSE; NN40Neurons.trainMSE];
-testMSE = [NN5Neurons.testMSE; NN10Neurons.testMSE;
-    NN20Neurons.testMSE; NN40Neurons.testMSE];
-R = [R5 R10 R20 R40]'
-Epochs = [NN5Neurons.num_epochs;
-    NN10Neurons.num_epochs; NN20Neurons.num_epochs;
-    NN40Neurons.num_epochs]
-
-Results = [R, testMSE, trainMSE, Epochs]
-% TODO: add time column (absolute or per epoch)
+NNlm = NN1Hidden(80, 'trainlm', 1000, x, y, false, false);
+NNgd = NN1Hidden(80, 'traingd', 1000, x, y, false, false);
 
 %% Testing neurons
 % Here, the goal is to obviate the epochs, see the best they can do
-%%
+%% Whole data
 % V is NHidden x 1, W = 1 x NHidden
 % here: W (V * x(NHidden*1)) (1*1)
 
-
-y_test5 = NN5Neurons.simulateData();
-y_test10 = NN10Neurons.simulateData();
-y_test20 = NN20Neurons.simulateData();
-y_test40 = NN40Neurons.simulateData();
+sim_lm = NNlm.simulateData();
+sim_gd = NNgd.simulateData();
 figure
-subplot(2,2,1)
-plot(x, y, "b", x, y_test5, "r");
-title('5 neurons');
-legend('target',alg,'Location','north');
-subplot(2,2,2)
-plot(x, y, "b", x, y_test10, "r");
-title('10 neurons');
-legend('target',alg,'Location','north');
-subplot(2,2,3)
-plot(x, y, "b", x, y_test20, "r");
-title('20 neurons');
-legend('target',alg,'Location','north');
-subplot(2,2,4)
-plot(x, y, "b", x, y_test40, "r");
-title('40 neurons');
-legend('target',alg,'Location','north');
-
-
-%train_mask = res.trainMask;
-% train_mask{1} returns a vector with 1 for the chosen data
+subplot(1,2,1)
+plot(x, y, "b", x, sim_lm, "r");
+title('lm - whole');
+legend('target','predicted','Location','north');
+subplot(1,2,2)
+plot(x, y, "b", x, sim_gd, "r");
+title('gd - whole');
+legend('target','predicted','Location','north');
+%% Train, test, regression
 %%
-[test5, y_test5] = NN5Neurons.simulateTest();
-[test10, y_test10] = NN10Neurons.simulateTest();
-[test20, y_test20] = NN20Neurons.simulateTest();
-[test40, y_test40] = NN40Neurons.simulateTest();
+
+sim_lm = NNlm.simulateData();
+sim_gd = NNgd.simulateData();
+[trainSet_lm, trainSim_lm] = NNlm.simulateTrain();
+[trainSet_gd, trainSim_gd] = NNgd.simulateTrain();
+[testSet_lm, testSim_lm] = NNlm.simulateTest();
+[testSet_gd, testSim_gd] = NNgd.simulateTest();
 
 figure
-subplot(2,2,1)
-plot(x, y, "b", x, y_test5, "r");
-title('5 neurons');
-legend('target',alg,'Location','north');
-subplot(2,2,2)
-plot(x, y, "b", x, y_test10, "r");
-title('10 neurons');
-legend('target',alg,'Location','north');
-subplot(2,2,3)
-plot(x, y, "b", x, y_test20, "r");
-title('20 neurons');
-legend('target',alg,'Location','north');
-subplot(2,2,4)
-plot(x, y, "b", x, y_test40, "r");
-title('40 neurons');
-legend('target',alg,'Location','north');
-%% 
-% Now, plot the regressions
-%%
+subplot(2,,1)
+plot(trainSet_lm, NNlm.ytrain, "bx", trainSet_lm, trainSim_lm, "r");
+title('lm - train set');
+legend('target','predicted','Location','north');
+subplot(2,3,2)
+plot(testSet_lm, NNlm.ytest, "b",  testSet_lm, testSim_lm, "r");
+title('lm - test set');
+legend('target','predicted','Location','north');
+subplot(2,3,3)
+%postreg(testSim_lm, NNlm.ytest)
+subplot(2,3,4)
+plot(trainSet_gd, NNgd.ytrain, "bx", trainSet_gd, trainSim_gd, "r");
+title('gd - train set');
+legend('target','predicted','Location','north');
+subplot(2,3,5)
+plot(testSet_gd, NNgd.ytest, "b",  testSet_gd, testSim_gd, "r");
+title('gd - test set');
+legend('target','predicted','Location','north');
+subplot(2,3,6)
+%postreg(testSim_gd, NNgd.ytest)
+
+%% Train, test, regression
 figure
 subplot(2,2,1)
 [~, ~, R5] = NN5Neurons.testRegression();
