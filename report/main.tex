@@ -28,93 +28,89 @@
 \begin{document}
 \maketitle
 \begin{table}[h!]
-    \caption{Coupled Simulated Annealing (csa) and Directed Search (ds)
-      results on different fine-tuning algorithms}
-    \label{tab:finetuning}
-    \begin{tabular}{@{}lrrrrr@{}}
-      \multicolumn{6}{c}{\textbf{gd}} \\
+    \begin{tabular}{@{}lrrrr@{}}
       \toprule
-      &  & \multicolumn{2}{c}{\emph{MSE}} & & \\
-      N  &   R_{test}  &  test & train  &  Epoch  & Time \\
+      \multicolumn{5}{c}{\textbf{gd}} \\
+      N  &   R_{t}  &  MSE_{t} &  Epch  & Time \\
       \midrule
-       5       &   0.06     &   0.50      &  0.48       &  542     & 1.61   \\
-      10       &   0.06     &   0.58      &  0.49       &  771     & 2.64   \\
-      20       &   0.31     &   0.44      &  0.37       &  849     & 2.82   \\
-      40       &   0.32     &   0.49      &  0.35       &  915     & 3.58   \\
-      80       &   0.49     &   0.46      &  0.27       &  958     & 4.12   \\
+       5       &   0.06     &  0.48       &  542     & 1.61   \\
+      10       &   0.06     &  0.49       &  771     & 2.64   \\
+      20       &   0.31     &  0.37       &  849     & 2.82   \\
+      40       &   0.32     &  0.35       &  915     & 3.58   \\
+      80       &   0.49     &  0.27       &  958     & 4.12   \\
       \bottomrule
     \end{tabular} 
     \hfill
-    \begin{tabular}{@{}lrrrrr@{}}
-      \multicolumn{6}{c}{\textbf{gda}} \\
+    \begin{tabular}{@{}lrrrr@{}}
       \toprule
-      &  & \multicolumn{2}{c}{\emph{MSE}} & & \\
-      N  &   R_{test}  &  test & train  &  Epoch  & Time \\
+      \multicolumn{5}{c}{\textbf{gda}} \\
+      N  &   R_{t}  &  MSE_{t} &  Epch  & Time \\
       \midrule
-       5  & 0.17    & 0.48    & 0.47    & 83      &  0.34   \\
-      10  & 0.17    & 0.51    & 0.46    & 79      &  0.28   \\
-      20  & 0.25    & 0.48    & 0.40    & 79      &  0.53   \\
-      40  & 0.29    & 0.54    & 0.47    & 67      &  0.58   \\
-      80  & 0.22    & 0.88    & 0.70    & 68      &  0.59   \\                 
+       5  & 0.17    & 0.48    & 83      &  0.34   \\
+      10  & 0.17    & 0.51    & 79      &  0.28   \\
+      20  & 0.25    & 0.48    & 79      &  0.53   \\
+      40  & 0.29    & 0.54    & 67      &  0.58   \\
+      80  & 0.22    & 0.88    & 68      &  0.59   \\                 
       \bottomrule
     \end{tabular} 
     \hfill
-    \begin{tabular}{@{}lrrrrr@{}}
-      \multicolumn{6}{c}{\textbf{cgf}} \\
+    \begin{tabular}{@{}lrrrr@{}}
       \toprule
-      &  & \multicolumn{2}{c}{\emph{MSE}} & & \\
-      N  &   R_{test}  &  test & train  &  Epoch  & Time \\
+      \multicolumn{5}{c}{\textbf{cgf}} \\
+      N  &   R_{t}  &  MSE_{t} &  Epch  & Time \\
       \midrule
-       5  & 0.13    & 0.51    & 0.46    &  7      &  0.19  \\
-      10  & 0.15    & 0.50    & 0.44    & 11      &  0.10  \\
-      20  & 0.42    & 0.38    & 0.30    & 17      &  0.31  \\
-      40  & 0.65    & 0.28    & 0.21    & 30      &  0.54  \\
-      80  & 0.69    & 0.29    & 0.14    & 44      &  0.53  \\
-      \bottomrule
-    \end{tabular} 
-    \hfill
-    \begin{tabular}{@{}lrrrrr@{}}
-      \multicolumn{6}{c}{\textbf{cgp}} \\
-      \toprule
-      &  & \multicolumn{2}{c}{\emph{MSE}} & & \\
-      N  &   R_{test}  &  test & train  &  Epoch  & Time \\
-      \midrule
-       5  & 0.07    & 0.49    & 0.46    &  7      &  0.9   \\
-      10  & 0.17    & 0.48    & 0.43    & 12      &  0.10  \\
-      20  & 0.33    & 0.48    & 0.32    & 15      &  0.40  \\
-      40  & 0.60    & 0.32    & 0.20    & 25      &  0.48  \\
-      80  & 0.67    & 0.31    & 0.12    & 35      &  1.59  \\
-      \bottomrule
-    \end{tabular} 
-    \hfill
-    \begin{tabular}{@{}lrrrrr@{}}
-      \multicolumn{6}{c}{\textbf{cgf}} \\
-      \toprule
-      &  & \multicolumn{2}{c}{\emph{MSE}} & & \\
-      N  &   R_{test}  &  test & train  &  Epoch  & Time \\
-      \midrule
-       5  & 0.23    & 0.47   &  0.46    & 13       & 0.28  \\
-      10  & 0.18    & 0.48   &  0.42    & 11       & 0.15  \\
-      20  & 0.43    & 0.40   &  0.27    & 17       & 0.30  \\
-      40  & 0.77    & 0.20   &  0.11    & 35       & 0.86  \\
-      80  & 0.91    & 0.9    &  0.00    & 39       & 2.34  \\
-      \bottomrule
-    \end{tabular} 
-    \hfill
-    \begin{tabular}{@{}lrrrrr@{}}
-      \multicolumn{6}{c}{\textbf{lm}} \\
-      \toprule
-      &  & \multicolumn{2}{c}{\emph{MSE}} & & \\
-      N  &   R_{test}  &  test & train  &  Epoch  & Time \\
-      \midrule
-       5  & 0.29    & 0.44   &  0.42    & 11       & 0.06  \\ 
-      10  & 0.18    & 0.44   &  0.38    & 11       & 0.07  \\ 
-      20  & 0.50    & 0.38   &  0.27    &  6       & 0.10  \\ 
-      40  & 0.85    & 0.13   &  0.9     & 11       & 0.18  \\ 
-      80  & 0.93    & 0.07   &  0.01    &  6       & 0.31  \\
+       5  & 0.13    & 0.51    &  7      &  0.19  \\
+      10  & 0.15    & 0.50    & 11      &  0.10  \\
+      20  & 0.42    & 0.38    & 17      &  0.31  \\
+      40  & 0.65    & 0.28    & 30      &  0.54  \\
+      80  & 0.69    & 0.29    & 44      &  0.53  \\
       \bottomrule
     \end{tabular} 
     \mbox{}
+    \begin{tabular}{@{}lrrrr@{}}
+      \toprule
+      \multicolumn{5}{c}{\textbf{cgp}} \\
+      N  &   R_{t}  &  MSE_{t} &  Epch  & Time \\
+      \midrule
+       5  & 0.07    & 0.49    &  7      &  0.9   \\
+      10  & 0.17    & 0.48    & 12      &  0.10  \\
+      20  & 0.33    & 0.48    & 15      &  0.40  \\
+      40  & 0.60    & 0.32    & 25      &  0.48  \\
+      80  & 0.67    & 0.31    & 35      &  1.59  \\
+      \bottomrule
+    \end{tabular} 
+    \hfill
+    \begin{tabular}{@{}lrrrr@{}}
+      \toprule
+      \multicolumn{5}{c}{\textbf{bfg}} \\
+      N  &   R_{t}  &  MSE_t &  Epch  & Time \\
+      \midrule
+       5  & 0.23    & 0.47   & 13       & 0.28  \\
+      10  & 0.18    & 0.48   & 11       & 0.15  \\
+      20  & 0.43    & 0.40   & 17       & 0.30  \\
+      40  & 0.77    & 0.20   & 35       & 0.86  \\
+      80  & 0.91    & 0.9    & 39       & 2.34  \\
+      \bottomrule
+    \end{tabular} 
+    \hfill
+    \begin{tabular}{@{}lrrrr@{}}
+      \toprule
+      \multicolumn{5}{c}{\textbf{lm}} \\
+      N  &   R_{t}  &  MSE_t &  Epch  & Time \\
+      \midrule
+       5  & 0.29    & 0.44   & 11       & 0.06  \\ 
+      10  & 0.18    & 0.44   & 11       & 0.07  \\ 
+      20  & 0.50    & 0.38   &  6       & 0.10  \\ 
+      40  & 0.85    & 0.13   & 11       & 0.18  \\ 
+      80  & 0.93    & 0.07   &  6       & 0.31  \\
+      \bottomrule
+    \end{tabular} \mbox{}
+    \caption{Performance of different training algorithms. \emph{N} is the
+      neurons on the hidden layer. $R_t$ and $MSE_t$ 
+    stand for regression R-value and for MSE on the test set, respectively. 
+    Test size is 15\% of the total data. \emph{Epch} stands for epoch of 
+  convergence. \emph{Time} is in seconds.}
+    \label{tab:finetuning}
   \end{table}
 
 
