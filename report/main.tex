@@ -30,7 +30,8 @@
 \begin{document}
 \maketitle
 \newpage
-\section{Algorithm comparison}
+\section{Lab 1}
+\subsection{Algorithm comparison}
   \begin{table}[h!]
     \begin{tabular}{@{}lrrrr@{}}
       \toprule
@@ -182,7 +183,7 @@
   is by far the worst, both in speed and accuracy. The reason is that [maybe 
   that looks for the best option/not optimized -check]
 
-  \subsection{Noisy data}
+  \subsubsection{Noisy data}
     \begin{figure}[h]
       \begin{adjustwidth}{-1.1cm}{-1.1cm}
       \centering
@@ -202,17 +203,23 @@
         \label{fig:noise_more_data}
       \end{subfigure}
       \end{adjustwidth}
-      \caption{comun: lm, 80 neuronas, colors}
+      \caption{Estimation of a function with Gaussian noise, 0 mean, and different
+        $\sigma$, or \emph{BW}. Figures (a) and (b) estimate on 190 data points, 
+        figure (c) estimates on 950, 5 times more points. The network contains 80 
+        hidden units, and it was trained using the \emph{lm} algorithm. MSE 
+        with noisy data is worse, compared with the same setup on 
+        \autoref{tab:train_algs}. Increasing the data points reduces again the 
+        error, as (c) shows.}
       \label{fig:noise}
     \end{figure}
 
-\section{Bayesian Inference}
+\subsection{Bayesian Inference}
   \begin{figure}[h]
     \centering
     \hfill
     \begin{tabular}{@{}lrrrrr@{}}
       \toprule
-      \multicolumn{6}{c}{\textbf{lm}} \\
+      \multicolumn{6}{c}{\textbf{Levenberg-Marquardt}} \\
       N  &   $R_t$  &  $MSE_t$ &  $MSE_{tr}$ & Epch  & T(s)\\
       \midrule
       50   &   0.97    &   0.03    &  \num{0.81d-2}  &  8   &  0.15  \\
@@ -224,7 +231,7 @@
     \hfill
     \begin{tabular}{@{}lrrrrr@{}}
       \toprule
-      \multicolumn{6}{c}{\textbf{br}} \\
+      \multicolumn{6}{c}{\textbf{Bayesian Optimization}} \\
       N  &   $R_t$  &  $MSE_t$ & $MSE_{tr}$  & Epch  & T(s)\\
       \midrule
       50   &   1.00    &   \num{d-4}  &  \num{0.94d-7}   & 150   &    2.11  \\
@@ -232,25 +239,12 @@
       150  &   0.89    &   0.11       &  \num{0.22d-4}   &  33   &   13.69  \\
       300  &   0.61    &   0.62       &  \num{0.19d-7}   &  27   &   92.65  \\
       \bottomrule
-
-
-
-
-
-
-
-
-
-
     \end{tabular}  \hfill\mbox{}
-    \caption{Raul}
-    \label{fig:validation}
+    \caption{}
+    \label{fig:bayes}
   \end{figure}
 
   
-
-
-
 
 
 
