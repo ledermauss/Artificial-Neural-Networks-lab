@@ -11,8 +11,9 @@ clear all
 x = 0:0.05:3*pi;
 y = sin(x.^2);
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Choosing the best algorithm in terms of performance
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % setup
 %neurons = [5, 10, 20, 40, 80, 100];
 neurons = [100, 120];
@@ -97,8 +98,9 @@ set(gca, 'FontSize', 12),
 fprintf(" Press a key to continue"), pause
 close
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Testing with under and overfitting
-%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Lets see how train and test behave with no validation, with over and underfitting
 %% overfit
 NN1Hidden(100, 'trainlm', 1000, x, y, true, true),pause % no val set (overfitting)
@@ -112,9 +114,36 @@ NN1Hidden(5, 'trainlm', 300, x, y, false, true),pause % val set (stop underfit)
 NN1Hidden(80, 'trainlm', 1000, x, y, true, true),pause % no val set (underfit)
 NN1Hidden(80, 'trainlm', 1000, x, y, false, true),pause % val set (stop underfit)
 
-%% some shit to force only training on the net.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%     Gaussian  Noise        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+x = 0:0.01:3*pi;
+y = sin(x.^2);
+noise = [0.2, 0.8 2];
+noiseRes = [];
+for bw=noise% set
+    noise = randn(size(x)) .* bw;
+    y_noise = y + noise;
 
-%% 
+    NN = NN1Hidden(80, 'trainlm', 1000, x, y_noise, false, false);
+    sim_noise = NN.simulateData();
+    [testSet_noise, testSim_noise] = NN.simulateTest();
+
+    figure
+    plot(x, y, "--b" ,x, y_noise, ":r",  x, sim_noise, "k"), % best config
+    set(gca, 'FontSize', 12),
+    title(['BW = ' num2str(bw) ', extra data'], 'FontSize', 18),
+    legend('target', 'noise', 'predicted','Location','north'), pause,
+    fprintf('press a key')
+
+    [~, ~, R] = NN.testRegression();
+    noiseRes = [ noiseRes; bw R NN.testMSE NN.trainMSE NN.epochs NN.time];
+end
+
+
+
+%%
 % Dudas (resueltas): 
 % % 
 % * Valor de convergencia para test y train? La NN minimiza el error en todo. 
