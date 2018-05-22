@@ -2,16 +2,23 @@
 % Nore: my function expects data as columns, and returns the data as columns
 
 q = 10;
-gauss = randn(50,500);
+gauss = randn(50,500); % d* N
 [gEt, greduced, geigvals] = mypca(gauss, q);
 [COEFF, SCORE] = pca(gauss', 'NumComponents', q);
 % SCORE sare the projected values. Rows = observations
 % Coeff corresponds to G (transformation matrix)
-[ghat, gerror] = reconstruct_mypca (greduced, gEt, gauss)
+[ghat, gerror] = reconstruct_mypca (greduced, gEt, gauss);
+gerror
+g_evol = plot_q(gauss, 5, 50, 5);
 
 %%
+[X,  mapstdSettings] = mapstd(gauss);
+[Y, PCAsettings] = processpca(X, 'maxfrac',0.0261);
+% maxfrac: variance threshold for keeping components
+Xhat = processpca('reverse', Y, PCAsettings);
+ghat2 = mapstd('reverse', Xhat, mapstdSettings);
 
-g_evol = plot_q(gauss, 5, 50, 5);
+gerror2 = mean_squared_error(ghat2, gauss)
 %%
 load choles_all
 [pEt, preduced, peigvals] = mypca(p, 2);

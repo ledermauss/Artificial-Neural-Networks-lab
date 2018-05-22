@@ -4,6 +4,6 @@ function [Et, reducedX, scaled_eigvals] = mypca(data, q)   % q: desired dimensio
     [~, all_eigvals] = eig(cov(x));  % easier to 
     scaled_eigvals = diag(eigvals) /trace(all_eigvals);
     Et = eigvec';                   % eigvecs: p (original dims) * q
-    reducedX = Et * data;
+    reducedX = Et * (data - mean(data,2));
 end
  
