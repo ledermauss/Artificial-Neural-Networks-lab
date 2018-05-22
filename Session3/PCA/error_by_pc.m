@@ -18,7 +18,7 @@ end
         i = i + 1;
         [Et, reduced, eigvals] = mypca(data, q);
         [~, error] = reconstruct_mypca(reduced, Et, data);
-        if inv_sum = true
+        if inv_sum == true
             pc_table(i, :) = [q, error,  1 - sum(eigvals)];
         else
             pc_table(i, :) = [q, error, sum(eigvals)];
