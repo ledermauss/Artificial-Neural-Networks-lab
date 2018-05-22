@@ -15,13 +15,15 @@ print_digit(mean_three, 0)
 figure;
 plot(eigvals)
 title("Eigenvalues scaled")
-%% 4 first PC
-%%
-% don't forget checking if observations are cols!
-% Setup
-samples = [100, 101, 102, 200, 250, 300 , 350, 400, 450, 500];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Componentwise reconstruction %%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% setup 
+% samples = [100, 101, 102, 200, 250 , 300, 350, 400, 450, 500]; % size 10
+samples = [100, 101, 102, 200];
 i = 1;
-PC = [1, 2, 3, 4, 16, 64, 128, 256];
+PC = [16 64 128 256];
 [ha, pos] = tight_subplot(length(PC) + 1,1, 0,[.01 .01],[.05 .01]);
 
 % Original numbers

@@ -2,4 +2,6 @@
 */images        
 */david
 *.mlx
-
+*.m~
+Session3/PCA/images
+report/build
