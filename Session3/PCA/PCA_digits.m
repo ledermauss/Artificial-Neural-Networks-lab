@@ -18,28 +18,34 @@ title("Eigenvalues scaled")
 %% 4 first PC
 %%
 % don't forget checking if observations are cols!
-samples = [100, 200, 101, 102];
-i = 0;
-PC = [4, 16, 64, 256]
+% Setup
+samples = [100, 101, 102, 200, 250, 300 , 350, 400, 450, 500];
+i = 1;
+PC = [1, 2, 3, 4, 16, 64, 128, 256];
+[ha, pos] = tight_subplot(length(PC) + 1,1, 0,[.01 .01],[.05 .01]);
+
+% Original numbers
 original = plot_mosaic(threes, 1, length(samples), samples)
-subplot(length(PC) + 1, 1, 1)
+axes(ha(i));
 colormap('bone');
 imagesc(1- original, [0,1]);
-set(gca,'XTick',[], 'Ytick', []); % remove X and Y labels
-ylabel('Original data');
+set(gca,'XTick',[], 'Ytick', [], 'FontSize', 18); % remove X and Y labels
+ylabel('Original');
+% reconstructed data
 for q=PC
     reconstruct = compress_reconstruct(threes, q);
     % figure; hold on; % to plot many times
     mosaic = plot_mosaic(reconstruct, 1, length(samples), samples);
      
     i = i + 1;
-    subplot(length(PC)+1 ,1, i +1)
+    axes(ha(i));
     colormap('bone');
     imagesc(1- mosaic, [0,1]);
-    set(gca,'XTick',[], 'Ytick', []); % remove X and Y labels
-    ylabel([num2str(q) ' PC']);
+    set(gca,'XTick',[], 'Ytick', [], 'FontSize', 18); % remove X and Y labels
+    ylabel([num2str(q)]);
 
 end
+%set(ha(2:length(PC),'XTickLabel','')
     
 %% 
 % Duds: porqué el primer componente está negro? O sea, hay valores muy pequeños, 
