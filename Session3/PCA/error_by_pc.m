@@ -20,13 +20,15 @@ end
         [~, error] = reconstruct_mypca(reduced, Et, data);
         if inv_sum == true
             pc_table(i, :) = [q, error,  1 - sum(eigvals)];
+            var_string = '1 - cumsum(var)';
         else
             pc_table(i, :) = [q, error, sum(eigvals)];
+            var_string = 'cumsum(var)';
         end
     end
-    plot(pc_table(:,1), pc_table(:,2), 'r', ...
+    plot(pc_table(:,1), pc_table(:,2), '-.r', ...
     pc_table(:,1), pc_table(:,3), 'b')
-    legend('error', 'variance', 'Location', 'south')
-    xlabel('q dimensions')
+    legend('Reconstruction MSE', var_string, 'Location', 'north')
+    xlabel('Selected Components')
 end
 

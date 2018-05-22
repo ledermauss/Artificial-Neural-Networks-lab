@@ -11,12 +11,12 @@ threes = threes'; % cols as observations
 print_digit(threes, 99);
 mean_three = mean(threes, 2); % mean of rows (feats)
 print_digit(mean_three)
-set(gca,'XTick',[], 'Ytick', [], 'FontSize', 18, 'Visible', 'off'); % remove X and Y labels
+%set(gca,'XTick',[], 'Ytick', [], 'FontSize', 18, 'Visible', 'off'); % remove X and Y labels
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Componentwise reconstruction %%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% Mosaic (many threes)
 % setup 
 % samples = [100, 101, 102, 200, 250 , 300, 350, 400, 450, 500]; % size 10
 samples = [100, 101, 102, 200];
@@ -50,6 +50,7 @@ end
 % - Plot for just one three the reconstructions with [1 2 3 4 16 54 128
 % 256] in one or two lines
 %% One threee only
+
 PC = [1 2 3 4 16 64 128 256];
 % removing the margins
 ax = gca;
@@ -79,25 +80,45 @@ end
 
 [Et, reduced, eigvals] = mypca(threes', 256);
 figure;
-plot(eigvals)
+bar(eigvals);
 title("Eigenvalues scaled")
-%%
+set(gca,'FontSize', 13); 
+
+%% Reconstruction error vs 1 - k_cumsum(var)
 figure;
-q_table = error_by_pc(threes,1,251,10);
-title('Digits')
-% Also compared to random data
+digits_error = error_by_pc(threes,1,256,5, true);
+title('Reconstruction MSE vs eigenvalues variance (Digits)')
+set(gca,'FontSize', 13);
+
+%% Regression
+plotregression(digits_error(:,2), digits_error(:,3), 'Target: Reconstruction MSE. Y: 1 - k_cumsum(var)')
+set(gca,'FontSize', 13);
+
+%% Random data: rec error vs 1 - k_cumsum(var)
 gauss = randn(50,500);
-g_evol = error_by_pc(gauss, 5, 50, 5);
-title('random data')
+g_evol = error_by_pc(gauss, 1, 50, 1, true);
+title('Reconstruction MSE vs eigenvalues variance (Gaussians)')
+set(gca,'FontSize', 13);
 
-%% 
-% TODO:
-% 
+%% Random trace vs digit trace
+[~, ~, evals_threes] = mypca(threes', 50);
+[~, ~, evals_gauss]  = mypca(gauss, 50);
+plot(1:50, evals_gauss, 'g', 1:50, evals_threes, 'b')
+legend("Random eigenvalues", "Digits eigenvalues", 'Location', 'north'),
+xlabel('Selected components'), ylabel('Scaled eigenvalues (variance)'),
+title("Digits vs Random trace"),
+set(gca, 'FontSize', 13)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Component meaning           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % * Analyze components like zotero paper: what is the first component, what 
-% is the second one (component, not sum)
+% is the second one (component, not sum). Two images
+% * Scholkopf: plot the component themself
+% * Componentwise plot from EPFL package
+
+
 %%
-
-
 function [] = print_digit(dgt, i)
     % cols as observations
     colormap('bone')
