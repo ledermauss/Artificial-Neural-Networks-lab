@@ -17,15 +17,19 @@ X=X(indx,:)';
 
 % we then initialize the SOM with hextop as topology function
 % ,linkdist as distance function and gridsize 5x5x5
-net = newsom(X,[5 5 5],'hextop','linkdist'); 
-
+iter = 100;
+initHood = 3;
+topologyFcn = 'hextop';     %  'hextop'(*), 'gridtop' and 'randtop'
+distanceFcn = 'linkdist';   % 'linkdist'(*), 'dist' and 'boxdist'
+net = newsom(X,[5 5 5], topologyFcn, distanceFcn); 
+%%
 % plot the data distribution with the prototypes of the untrained network
 figure;plot3(X(1,:),X(2,:),X(3,:),'.g','markersize',10);
 axis([-2 2 -2 2]);
 hold on
 plotsom(net.iw{1},net.layers{1}.distances)
 hold off
-
+%%
 % finally we train the network and see how their position changes
 net.trainParam.epochs = 100;
 net = train(net,X);
