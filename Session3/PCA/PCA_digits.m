@@ -51,7 +51,7 @@ end
 % 256] in one or two lines
 %% One threee only
 
-PC = [1 2 3 4 16 64 128 256];
+PC = [1 2 3 4 16 50 64 128 256];
 % removing the margins
 ax = gca;
 outerpos = ax.OuterPosition;
@@ -90,14 +90,17 @@ digits_error = error_by_pc(threes,1,256,5, true);
 title('Reconstruction MSE vs eigenvalues variance (Digits)')
 set(gca,'FontSize', 13);
 
-%% Regression
-plotregression(digits_error(:,2), digits_error(:,3), 'Target: Reconstruction MSE. Y: 1 - k_cumsum(var)')
-set(gca,'FontSize', 13);
-
 %% Random data: rec error vs 1 - k_cumsum(var)
 gauss = randn(50,500);
-g_evol = error_by_pc(gauss, 1, 50, 1, true);
+g_error = error_by_pc(gauss, 1, 50, 1, true);
 title('Reconstruction MSE vs eigenvalues variance (Gaussians)')
+set(gca,'FontSize', 13);
+
+%% Regression
+% note: second col (y axis) is the MSE error, third the cumsum
+% regression: first target (x axis), later output (y axis)
+plotregression(g_error(:,3), g_error(:,2), 'Gaussians'),
+xlabel("Sum(k-eigvals)"), ylabel("Reconstruction Error")
 set(gca,'FontSize', 13);
 
 %% Random trace vs digit trace
