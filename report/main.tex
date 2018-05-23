@@ -254,133 +254,84 @@
 \newpage
 \section{Unsupervised Learning}
   \subsection{Principal Component Analysis}
+  The goal of this section is to understand the meaning and consequences of using
+  PCA, applied to the \emph{threes} dataset. \autoref{fig:first_task} summarizes the data:
+  on the right I present the average \emph{three}, on the left the eigenvalues of the whole
+  dataset, scaled over their sum. The first components explain most of the variance:
+  just 12 explain 63\%, and with 50 it adds up to 90\%.  Therefore, using 50 
+  components or more should already deliver a good reconstruction of the data.
+  \autoref{fig:digits_rec} confirms it: with more than 50 components
+  reconstruction  \emph{MSE} is already under \num{0.1}.  On the other hand, 
+  on random data variance spreads more uniformly across the components, as 
+  the green line in \autoref{fig:first_task} shows.
+  It takes more components to have both decent reconstruction error and summed 
+  variance. For example, 12 components only explain 34\% of the variance, and
+  deliver \num{0.8} $MSE$ on the reconstruction. Finally, both digits and random
+  data show a strong correlation between the sum of variance of the last k left-out
+  components and the reconstruction error, displayed in \autoref{fig:regression}. 
+  The shape of the curve suggests that the relationship between them is logarithmic,
+  not linear.
+  
   \begin{figure}[h]
     \centering
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/original.png}
-      \caption{}
-      \label{fig:perfect_fit}
+    \begin{subfigure}[t]{0.4\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/digits_vs_random_trace.png}
+      \label{fig:trace_compared}
     \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC1.png}
-      \caption{}
-      \label{fig:overfit}
+    \begin{subfigure}[t]{0.3\linewidth}
+      \includegraphics[width=1\linewidth, height=4.75cm]{./lab3/PCA/mean_three.png}
+      \label{fig:mean_three}
     \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC2.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC3.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC4.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC16.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC50.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC64.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC128.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.19\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/single_three/PC256.png}
-      \caption{}
-      \label{fig:underfit}
-    \end{subfigure}
-    \caption{}
-    \label{fig:threes}
+    \caption{First task of the exercise: computing the mean three (right), and 
+    plotting the eigenvalues (left). The digits eigenvalues have been compared
+  to those of a random, multivariate Gaussian distribution, in green.}
+    \label{fig:first_task}
   \end{figure}
-
-  \begin{figure}[h]
-    \centering
-    \begin{subfigure}[t]{0.49\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_1_4_small.png}
-      \caption{Validation set avoids overfitting}
-      \label{fig:perfect_fit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.49\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_16_256_small.png}
-      \caption{Overfit. 120 Neurons}
-      \label{fig:overfit}
-    \end{subfigure}
-    \caption{}
-    \label{fig:validation}
-  \end{figure}
-
   \begin{figure}[h]
     \begin{adjustwidth}{-1cm}{-1cm}
     \centering
     \begin{subfigure}[t]{0.3\linewidth}
       \includegraphics[width=1\linewidth]{./lab3/PCA/rec_vs_invsum_gauss.png}
-      \caption{Validation set avoids overfitting}
-      \label{fig:perfect_fit}
+      \caption{Gaussians dataset}
+      \label{fig:gauss_rec}
     \end{subfigure}
     \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/rec_vs_invsum_digits.png}
-      \caption{Validation set avoids overfitting}
-      \label{fig:perfect_fit}
+      \includegraphics[width=1\linewidth, height=4.65cm]{./lab3/PCA/rec_vs_invsum_digits.png}
+      \caption{Digits dataset}
+      \label{fig:digits_rec}
     \end{subfigure}
     \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth, height=4cm]{./lab3/PCA/regression_digits.png}
-      \caption{Overfit. 120 Neurons}
-      \label{fig:overfit}
+      \includegraphics[width=1\linewidth, height=4.65cm]{./lab3/PCA/regression_digits.png}
+      \caption{Reconstruction MSE linear fit}
+      \label{fig:regression}
     \end{subfigure}
     \end{adjustwidth}
-    \caption{hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola
-    hola hola hola hola hola hola hola hola hola hola hola hola hola }
-    \label{fig:validation}
+    \caption{Plot of the reconstruction error for each number of selected $k$ components (red),
+    against the sum of the variance of the last $256-k$ components (blue), on 
+  different datasets. Right figure plots their linear fit.}
+    \label{fig:rec_vs_cumsum}
   \end{figure}
 
+  \paragraph{Visual interpretation} 
   \begin{figure}[h]
     \centering
-    \begin{subfigure}[t]{0.4\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/rec_vs_invsum_gauss.png}
-      \caption{Validation set avoids overfitting}
-      \label{fig:perfect_fit}
+    \begin{subfigure}[t]{0.49\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_1_4_small.png}
     \end{subfigure}
-    \begin{subfigure}[t]{0.4\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/rec_vs_invsum_digits.png}
-      \caption{Validation set avoids overfitting}
-      \label{fig:perfect_fit}
+    \begin{subfigure}[t]{0.49\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_16_256_small.png}
     \end{subfigure}
-    \begin{subfigure}[t]{0.4\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/regression_digits.png}
-      \caption{Overfit. 120 Neurons}
-      \label{fig:overfit}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.4\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/regression_gaussians.png}
-      \caption{Overfit. 120 Neurons}
-      \label{fig:overfit}
-    \end{subfigure}
-    \caption{hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola
-    hola hola hola hola hola hola hola hola hola hola hola hola hola }
-    \label{fig:validation}
+    \caption{Reconstruction of four different samples (columns) with increasing
+      number of components (rows). Top row of each table contains the 
+    original samples. Vertical labels indicate the number of components}
+    \label{fig:threes}
   \end{figure}
+
 
 
   \subsection{Self Organizing Map}
   %https://nl.mathworks.com/help/nnet/ug/cluster-with-self-organizing-map-neural-network.html
-  \blindtext
+  \Blindtext
 
 
 
