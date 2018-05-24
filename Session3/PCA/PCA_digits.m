@@ -22,6 +22,7 @@ print_digit(mean_three)
 samples = [100, 101, 102, 200];
 i = 1;
 PC = [1 16 64 128 256];
+% tight subplot: no spaces between plots
 [ha, pos] = tight_subplot(length(PC) + 1,1, 0,[.01 .01],[.05 .01]);
 
 % Original numbers
@@ -84,22 +85,28 @@ bar(eigvals);
 title("Eigenvalues scaled")
 set(gca,'FontSize', 14); 
 
+%% Digits dataset %%
 %% Reconstruction error vs 1 - k_cumsum(var)
 figure;
 digits_error = error_by_pc(threes,1,256,5, true);
 title('Reconstruction MSE vs eigenvalues variance (Digits)')
 set(gca,'FontSize', 16);
-
-%% Random data: rec error vs 1 - k_cumsum(var)
-gauss = randn(50,500);
-g_error = error_by_pc(gauss, 1, 50, 1, true);
-title('Reconstruction MSE vs eigenvalues variance (Gaussians)')
-set(gca,'FontSize', 16);
-
 %% Regression
 % note: second col (y axis) is the MSE error, third the cumsum
 % regression: first target (x axis), later output (y axis)
 plotregression(digits_error(:,3), digits_error(:,2), 'Digits - Rec. Error fit'),
+xlabel("1 - Sum(k-eigvals)"), ylabel("Reconstruction Error")
+set(gca,'FontSize', 16);
+
+%% Random data %%
+%% ec error vs 1 - k_cumsum(var)
+gauss = randn(256,500);
+g_error = error_by_pc(gauss, 1, 256, 5, true);
+title('Reconstruction MSE vs eigenvalues variance (Gaussians)')
+set(gca,'FontSize', 16);
+
+%% Regression
+plotregression(g_error(:,3), g_error(:,2), 'Digits - Rec. Error fit'),
 xlabel("1 - Sum(k-eigvals)"), ylabel("Reconstruction Error")
 set(gca,'FontSize', 16);
 
@@ -119,7 +126,7 @@ title('Reconstruction MSE vs eigenvalues variance (Digits)')
 set(gca,'FontSize', 14);
 %% rec error vs cumsum - gauss
 figure;
-gauss_cumsum = error_by_pc(gauss,2,50,2, false);
+gauss_cumsum = error_by_pc(gauss, 1,256,5, false);
 title('Reconstruction MSE vs eigenvalues variance (Digits)')
 set(gca,'FontSize', 14);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,9 +136,68 @@ set(gca,'FontSize', 14);
 % is the second one (component, not sum). Two images
 % * Scholkopf: plot the component themself
 % * Componentwise plot from EPFL package
+%% Eigvec plot
+[Et, reducedX, eigvals] = mypca(threes, 256, false);
+ %Et = pca(threes'); Et = Et';
+comp = 1;
+for i=1:6
+    subplot(2, 3, i)
+    print_digit(Et' * 3 , i)  % * 3 just scales
+end
+%first_com = Et(comp,:) * (threes - mean(threes, 2));
+%vals = [0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+%quant = quantile(first_com, vals);
+
+%% Extract indexes of threes corresponding to PC quantiles
+% values on those PC
+comp1 = 1; comp2 = 5;
+first_com = Et(comp1,:) * (threes - mean(threes,  2));
+second_com = Et(comp2,:) * (threes - mean(threes, 2));
+vals = [0.2 0.4 0.6 0.8 1];
+% quantiles
+first_quant = quantile(first_com, vals);
+second_quant = quantile(second_com, vals);
+first_col = first_com';
+second_col = second_com';
+indexes = zeros(length(vals)); % N*N
+r = 0;
+% finding the best matches
+for q1=first_quant
+    r = r + 1;
+    c = 0;
+    for q2=second_quant
+        c = c + 1;
+        % closest three (euclidean dist) to the quantile
+        dists = sqrt((first_col - q1).^2 + (second_col - q2).^2);
+        [val, index] = min(dists);
+        indexes(r, c) = index;
+    end
+end
+
+%% Plotting those threes
+[ha, pos] = tight_subplot(length(vals), length(vals), 0,[.05 .01],[.05 .01]);
+count = 0;
+for i = 1:length(vals)
+    for j = 1:length(vals)
+        count = count + 1;
+        axes(ha(count));
+        %subplot(length(vals), length(vals), count)
+        print_digit(threes, indexes(i, j))
+        set(gca,'XTick',[], 'Ytick', [], 'FontSize', 16); % remove X and Y labels
+        if j == 1 % labels on the first column
+            ylabel([num2str(vals(i))])% ' PC' num2str(comp1)])
+        end 
+        if i == 5 % labels on the last row
+            xlabel([num2str(vals(j))])% ' PC' num2str(comp1)])
+        end
+    end
+end
+%set(ha(1:20), 'Xtick', [])
 
 
-%%
+%%%%%%%%%%%%%%%
+%% Functions %%
+%%%%%%%%%%%%%%%
 function [] = print_digit(dgt, i)
     % cols as observations
     colormap('bone')

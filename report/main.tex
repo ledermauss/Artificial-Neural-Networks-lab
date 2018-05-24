@@ -256,21 +256,17 @@
   \subsection{Principal Component Analysis}
   The goal of this section is to understand the meaning and consequences of using
   PCA, applied to the \emph{threes} dataset. \autoref{fig:first_task} summarizes the data:
-  on the right I present the average \emph{three}, on the left the eigenvalues of the whole
-  dataset, scaled over their sum. The first components explain most of the variance:
-  just 12 explain 63\%, and with 50 it adds up to 90\%.  Therefore, using 50 
-  components or more should already deliver a good reconstruction of the data.
-  \autoref{fig:digits_rec} confirms it: with more than 50 components
-  reconstruction  \emph{MSE} is already under \num{0.1}.  On the other hand, 
-  on random data variance spreads more uniformly across the components, as 
-  the green line in \autoref{fig:first_task} shows.
-  It takes more components to have both decent reconstruction error and summed 
-  variance. For example, 12 components only explain 34\% of the variance, and
-  deliver \num{0.8} $MSE$ on the reconstruction. Finally, both digits and random
-  data show a strong correlation between the sum of variance of the last k left-out
-  components and the reconstruction error, displayed in \autoref{fig:regression}. 
-  The shape of the curve suggests that the relationship between them is logarithmic,
-  not linear.
+  on the right I present the average \emph{three}, on the left the eigenvalues, 
+  scaled over their sum. The first components explain most of the variance:
+  just 12 explain 63\%, and with 50 it adds up to 90\%. Therefore, 50 components 
+  should already deliver a good reconstruction of the data. The right panel
+  of \autoref{fig:many_pc} proves it; with 64 and 128 PC the result
+  is almost the original sample. With 256 PC the recovered image is exactly
+  the same, and the \emph{MSE} is 0. With data $X \in {\rm I\!R}^{d \times N}$,
+  being $d$ the input feature space; $V \in {\rm I\!R}^{d \times s}$ the
+  eigenvector matrix, $s$ selected components; and $X_s=V^{t}X$ the data
+  projected on those components. If $s=d$, then $VV^{t}=I$ (full rank orthogonal matrix).
+  Then, $\hat{X} = VX_s = VV^{t}X = X$. 
   
   \begin{figure}[h]
     \centering
@@ -283,10 +279,40 @@
       \label{fig:mean_three}
     \end{subfigure}
     \caption{First task of the exercise: computing the mean three (right), and 
-    plotting the eigenvalues (left). The digits eigenvalues have been compared
+    plotting the first 50 eigenvalues (left). They have been compared
   to those of a random, multivariate Gaussian distribution, in green.}
     \label{fig:first_task}
   \end{figure}
+
+  \begin{figure}[h]
+    \centering
+    \begin{subfigure}[t]{0.49\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_1_4_small.png}
+      \caption{Few PC. $MSE(rec) > 0.9; variance < 12\%$}
+      \label{fig:few_pc}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_16_256_small.png}
+      \caption{Many PC. $MSE(rec) < 0.75; variance > 45\%$}
+      \label{fig:many_pc}
+    \end{subfigure}
+    \caption{Reconstruction of four different samples (columns) with increasing
+      number of components (rows). Top row of each table contains the 
+    original samples. Vertical labels indicate the number of components}
+    \label{fig:threes_pc}
+  \end{figure}
+
+  With Gaussian data 50 components are not enough: they explain only 43\% of the 
+  variance, and deliver a reconstruction error of 0.77 (\autoref{fig:gauss_rec}),
+  whereas in the digits it is already below 0.1 (\autoref{fig:digits_rec}). 
+  It makes sense, because in random data all features carry the same variance, 
+  there is no optimal direction.  Therefore, the eigenvalues sink more gradually,
+  as in \autoref{fig:first_task}.  Anyway, both datasets show a strong 
+  correlation between the sum of variance of the last $k$ left-out components 
+  and the reconstruction $MSE$, displayed in \autoref{fig:regression}. The shape
+  of the curve suggests that the relationship between them is logarithmic, 
+  rather than linear.
+
   \begin{figure}[h]
     \begin{adjustwidth}{-1cm}{-1cm}
     \centering
@@ -296,12 +322,12 @@
       \label{fig:gauss_rec}
     \end{subfigure}
     \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth, height=4.65cm]{./lab3/PCA/rec_vs_invsum_digits.png}
+      \includegraphics[width=1\linewidth, height=4.7cm]{./lab3/PCA/rec_vs_invsum_digits.png}
       \caption{Digits dataset}
       \label{fig:digits_rec}
     \end{subfigure}
     \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth, height=4.65cm]{./lab3/PCA/regression_digits.png}
+      \includegraphics[width=1\linewidth, height=4.7cm]{./lab3/PCA/regression_digits.png}
       \caption{Reconstruction MSE linear fit}
       \label{fig:regression}
     \end{subfigure}
@@ -311,21 +337,20 @@
   different datasets. Right figure plots their linear fit.}
     \label{fig:rec_vs_cumsum}
   \end{figure}
+  
 
-  \paragraph{Visual interpretation} 
-  \begin{figure}[h]
-    \centering
-    \begin{subfigure}[t]{0.49\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_1_4_small.png}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.49\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_16_256_small.png}
-    \end{subfigure}
-    \caption{Reconstruction of four different samples (columns) with increasing
-      number of components (rows). Top row of each table contains the 
-    original samples. Vertical labels indicate the number of components}
-    \label{fig:threes}
-  \end{figure}
+  \paragraph{Visual interpretation} the reconstruction a sample with few components 
+  if much different from the original image, as the images on \autoref{fig:few_pc} 
+  show. These reconstructions seem more similar to the average \emph{three} of 
+  \autoref{fig:first_task}. The reason is that the first components model the
+  main structure underlying all the data, the \emph{essence} of the \emph{threes}.
+  As more components are added, reconstruction becomes more accurate.  The last 
+  components model the noise, the particularities of each data point. Since
+  most variance lies below 50 PC, any reconstruction with more than those delivers
+  almost the same result, as seen on \autoref{fig:many_pc}
+  
+
+
 
 
 

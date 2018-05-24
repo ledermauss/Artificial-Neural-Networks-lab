@@ -1,8 +1,6 @@
 function [Et, reducedX, eigvals] = mypca(data, q, scale)   % q: desired dimensions
     if nargin < 3
         scale = true;
-    else
-        scale = false;
     end
     x = data';                  % observation as rows (expected as columns)
     [eigvec, eigvals] = eigs(cov(x), q);  %cov centers matrix automatically
