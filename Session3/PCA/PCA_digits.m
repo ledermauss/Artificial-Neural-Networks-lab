@@ -129,6 +129,7 @@ figure;
 gauss_cumsum = error_by_pc(gauss, 1,256,5, false);
 title('Reconstruction MSE vs eigenvalues variance (Digits)')
 set(gca,'FontSize', 14);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Component meaning           %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,14 +140,13 @@ set(gca,'FontSize', 14);
 %% Eigvec plot
 [Et, reducedX, eigvals] = mypca(threes, 256, false);
  %Et = pca(threes'); Et = Et';
-comp = 1;
+ 
+[ha, pos] = tight_subplot(2, 3, [0.07 0.01],[.01 .07],[.01 .01]);
 for i=1:6
-    subplot(2, 3, i)
-    print_digit(Et' * 3 , i)  % * 3 just scales
+    axes(ha(i))   
+    print_digit(Et' * 3 , i), title(['PC' num2str(i)])  % * 3 just scales
+    set(gca,'XTick',[], 'Ytick', [], 'FontSize', 13); % remove X and Y labels
 end
-%first_com = Et(comp,:) * (threes - mean(threes, 2));
-%vals = [0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
-%quant = quantile(first_com, vals);
 
 %% Extract indexes of threes corresponding to PC quantiles
 % values on those PC
@@ -175,7 +175,7 @@ for q1=first_quant
 end
 
 %% Plotting those threes
-[ha, pos] = tight_subplot(length(vals), length(vals), 0,[.05 .01],[.05 .01]);
+[ha, pos] = tight_subplot(length(vals), length(vals), 0,[.06 .01],[.05 .01]);
 count = 0;
 for i = 1:length(vals)
     for j = 1:length(vals)
@@ -192,9 +192,30 @@ for i = 1:length(vals)
         end
     end
 end
-%set(ha(1:20), 'Xtick', [])
 
+%% Cherrypicking good threes for the first component
+% Just PC1 eigvec
+ax = gca;
+outerpos = ax.OuterPosition;
+ti = ax.TightInset; 
+left = outerpos(1) + ti(1);
+bottom = outerpos(2) + ti(2);
+ax_width = outerpos(3) - ti(1) - ti(3);
+ax_height = outerpos(4) - ti(2) - ti(4);
+ax.Position = [left bottom ax_width ax_height];
+print_digit(Et' * 3, 1),    
+set(gca,'XTick',[], 'Ytick', [], 'Visible', 'off'); % remove X and Y labels
+%first_com = Et(comp,:) * (threes - mean(threes, 2));
+%vals = [0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+%quant = quantile(first_com, vals);
 
+% all the others
+col = 3
+for i=1:5
+    print_digit(threes, indexes(i, col))
+    set(gca,'XTick',[], 'Ytick', [], 'Visible', 'off'); % remove X and Y labels
+    print(gcf,['images/PC_interpret/PC1_' num2str(i)],'-dpng');
+end
 %%%%%%%%%%%%%%%
 %% Functions %%
 %%%%%%%%%%%%%%%

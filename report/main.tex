@@ -332,16 +332,19 @@
       \label{fig:regression}
     \end{subfigure}
     \end{adjustwidth}
-    \caption{Plot of the reconstruction error for each number of selected $k$ components (red),
+    \caption{Plot of the reconstruction $MSE$ for each number of selected $k$ components (red),
     against the sum of the variance of the last $256-k$ components (blue), on 
   different datasets. Right figure plots their linear fit.}
     \label{fig:rec_vs_cumsum}
   \end{figure}
   
 
-  \paragraph{Visual interpretation} the reconstruction a sample with few components 
+  % still needs improvement. If I cannot expand the pages and add the
+  % components interpretation, put this (model the main structure of the data)
+  % in the threes footnote, and remove this paragraph
+  \paragraph{Visual interpretation} a sample with few components 
   if much different from the original image, as the images on \autoref{fig:few_pc} 
-  show. These reconstructions seem more similar to the average \emph{three} of 
+  show. These recovered images seem more similar to the average \emph{three} of 
   \autoref{fig:first_task}. The reason is that the first components model the
   main structure underlying all the data, the \emph{essence} of the \emph{threes}.
   As more components are added, reconstruction becomes more accurate.  The last 
@@ -350,6 +353,43 @@
   almost the same result, as seen on \autoref{fig:many_pc}
   
 
+  \begin{figure}[h]
+    \centering
+    \begin{subfigure}[t]{0.16\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1.png}
+      \caption{PC 1}
+      \label{fig:PC1}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.16\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_02.png}
+      \caption{0.2}
+      \label{fig:quant02}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.16\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_04.png}
+      \caption{0.4}
+      \label{fig:quant04}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.16\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_06.png}
+      \caption{0.6}
+      \label{fig:quant06}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.16\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_08.png}
+      \caption{0.8}
+      \label{fig:quant08}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.16\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_1.png}
+      \caption{1}
+      \label{fig:quant1}
+    \end{subfigure}
+    \caption{First principal component plotted (left) along with threes corresponding
+    to different quantiles, on the data distribution over that PC. Quantile below
+  the image}
+    \label{fig:quantiles}
+  \end{figure}
 
 
 
