@@ -5,4 +5,5 @@ function [Xhat, error] = reconstruct_mypca(reduced, Et, original)
 % error: MSE(X - Xhat)
 Xhat = (Et' * reduced) + mean(original, 2);  
 error = sqrt(mean(mean((original - Xhat).^2)));
+% should actually be (mean(sum(.))) no sqrt
 end
