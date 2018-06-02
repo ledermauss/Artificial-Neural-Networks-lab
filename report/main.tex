@@ -32,7 +32,7 @@
 \maketitle
 \newpage
 \section{Lab 1}
-\subsection{Algorithm comparison}
+  \subsection{Algorithm comparison}
   \begin{table}[h!]
     \begin{tabular}{@{}lrrrr@{}}
       \toprule
@@ -214,14 +214,24 @@
       \label{fig:noise}
     \end{figure}
 
-\subsection{Bayesian Inference}
-  \begin{figure}[h]
+    \autoref{fig:noise} demonstrates that adding noise to the function affects
+    the network estimation. It basically increases its error, no matter its
+    setup. In this case, having more data points makes error go back to its
+    original result: \autoref{fig:noise_more_data} shows it. This result 
+    showcases another property of neural networks: they handle noisy data better
+    than other estimators and even better when there is even more data, without
+    increasing the demand for memory (opposed to SVM, where more data points mean
+    bigger Kernel matrices).
+      
+
+  \subsection{Bayesian Inference}
+  \begin{table}[h]
     \centering
     \hfill
     \begin{tabular}{@{}lrrrrr@{}}
       \toprule
       \multicolumn{6}{c}{\textbf{Levenberg-Marquardt}} \\
-      N  &   $R_t$  &  $MSE_t$ &  $MSE_{tr}$ & Epch  & T(s)\\
+    N  &   $R_{t}$  &  $MSE_{t}$ &  $MSE_{tr}$ & Epch  & T(s)\\
       \midrule
       50   &   0.97    &   0.03    &  \num{0.81d-2}  &  8   &  0.15  \\
       100  &   0.90    &   0.10    &  \num{0.29d-2}  &  6   &  0.33  \\
@@ -233,7 +243,7 @@
     \begin{tabular}{@{}lrrrrr@{}}
       \toprule
       \multicolumn{6}{c}{\textbf{Bayesian Optimization}} \\
-      N  &   $R_t$  &  $MSE_t$ & $MSE_{tr}$  & Epch  & T(s)\\
+      N  &   $R_{t}$  &  $MSE_{t}$ & $MSE_{tr}$  & Epch  & T(s)\\
       \midrule
       50   &   1.00    &   \num{d-4}  &  \num{0.94d-7}   & 150   &    2.11  \\
       100  &   0.98    &   0.02       &  \num{0.50d-2}   & 106   &    6.52  \\
@@ -241,9 +251,31 @@
       300  &   0.61    &   0.62       &  \num{0.19d-7}   &  27   &   92.65  \\
       \bottomrule
     \end{tabular}  \hfill\mbox{}
-    \caption{}
-    \label{fig:bayes}
-  \end{figure}
+    \caption{Comparison between the Levenberg-Marquardt algorithm and Bayesian
+    optimization, using overparametrized networks. $t$ stands for test set, $tr$
+    stands for training set. As the hidden units increase, the \texttt{trainlm} 
+    algorithm starts to overparametrize: validation set makes training finish 
+    earlier and error on the test set increases too, whereas \emph{MSE} on the 
+    training set remains constant. On the other hand, Bayes prior tries to keep
+    the weights small, so test error increase is not as steep. In exchange, training
+    takes more time, because finding the probabilities of each model takes
+    much time.}
+    \label{tab:bayes}
+    \end{table}
+
+    \autoref{tab:bayes} compares the performance of Bayesian learning against the 
+    best performing algorithm from the previous section. The table showcases the
+    main advantage of Bayesian optimization: it minimizes the weights of the
+    network thanks to its prior distribution. Therefore, performance is better
+    when there are too many hidden units. It comes at a price: training is way slower
+    because there is no validation set; it calculates the probability distribution
+    of the prior and the posterior at each level, which takes more time than regular
+    backpropagation. The table also shows a common problem when searching the best
+    parameter configuration: the \texttt{trainlm} algorithm reached its peak 
+    performance with 50 neurons, but I skipped this setup on \autoref{tab:train_algs}
+
+
+
 
   
 
@@ -386,8 +418,10 @@
       \label{fig:quant1}
     \end{subfigure}
     \caption{First principal component plotted (left) along with threes corresponding
-    to different quantiles, on the data distribution over that PC. Quantile below
-  the image}
+      to different quantiles, on the data distribution over that PC. Quantile below
+    the image. % remove the following
+    This component models cursivity
+  }
     \label{fig:quantiles}
   \end{figure}
 
