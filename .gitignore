@@ -5,4 +5,5 @@
 *.m~
 Session3/PCA/images
 report/build
+report/draft.md
 *.swp

@@ -299,38 +299,51 @@
   eigenvector matrix, $s$ selected components; and $X_s=V^{t}X$ the data
   projected on those components. If $s=d$, then $VV^{t}=I$ (full rank orthogonal matrix).
   Then, $\hat{X} = VX_s = VV^{t}X = X$. 
-  
   \begin{figure}[h]
+    \begin{adjustwidth}{-1cm}{-1cm}
     \centering
-    \begin{subfigure}[t]{0.4\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/digits_vs_random_trace.png}
+    \begin{subfigure}[t]{0.3\linewidth}
+      \includegraphics[width=1\linewidth, height=4.4cm]{./lab3/PCA/digits_vs_random_trace.png}
       \label{fig:trace_compared}
     \end{subfigure}
-    \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth, height=4.75cm]{./lab3/PCA/mean_three.png}
-      \label{fig:mean_three}
+    \begin{subfigure}[t]{0.29\linewidth}
+      \includegraphics[width=1\linewidth, height=4.4cm]{./lab3/PCA/digits_vs_random_recMSE.png}
+      \caption{Digits dataset}
+      \label{fig:digits_rec}
     \end{subfigure}
-    \caption{First task of the exercise: computing the mean three (right), and 
-    plotting the first 50 eigenvalues (left). They have been compared
-  to those of a random, multivariate Gaussian distribution, in green.}
-    \label{fig:first_task}
+    \begin{subfigure}[t]{0.3\linewidth}
+      \includegraphics[width=1\linewidth, height=4.3cm]{./lab3/PCA/regression.png}
+      \caption{Reconstruction MSE linear fit}
+      \label{fig:regression}
+    \end{subfigure}
+    \end{adjustwidth}
+    \caption{Plot of the reconstruction $MSE$ for each number of selected $k$ components (red),
+    against the sum of the variance of the last $256-k$ components (blue), on 
+  different datasets. Right figure plots their linear fit.}
+    \label{fig:rec_vs_cumsum}
   \end{figure}
+  
 
   \begin{figure}[h]
     \centering
-    \begin{subfigure}[t]{0.49\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_1_4_small.png}
-      \caption{Few PC. $MSE(rec) > 0.9; variance < 12\%$}
+    \hfill
+    \begin{subfigure}[t]{0.4\linewidth}
+      \includegraphics[width=\linewidth, height=4.3cm]{./lab3/PCA/mosaics/PC_1_4_small.png}
+      %\caption{Few PC. $MSE(rec) > 0.9; variance < 12\%$}
       \label{fig:few_pc}
     \end{subfigure}
-    \begin{subfigure}[t]{0.49\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/mosaics/PC_16_256_small.png}
-      \caption{Many PC. $MSE(rec) < 0.75; variance > 45\%$}
+    \hfill
+    \begin{subfigure}[t]{0.4\linewidth}
+      \includegraphics[width=\linewidth,height=4.3cm]{./lab3/PCA/mosaics/PC_16_256_small.png}
+      %\caption{Many PC. $MSE(rec) < 0.75; variance > 45\%$}
       \label{fig:many_pc}
     \end{subfigure}
+    \hfill \mbox{}
     \caption{Reconstruction of four different samples (columns) with increasing
       number of components (rows). Top row of each table contains the 
-    original samples. Vertical labels indicate the number of components}
+    original samples. Vertical labels indicate the number of components. On the
+    left panel, MSE ranges between $0.25$ and $0.9$, for 1 and 4 PC respectively.
+  With 16 or more PC, MSE is always below $0.75$, reaching $0$ for 256 components.}
     \label{fig:threes_pc}
   \end{figure}
 
@@ -346,29 +359,31 @@
   rather than linear.
 
   \begin{figure}[h]
-    \begin{adjustwidth}{-1cm}{-1cm}
     \centering
-    \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/rec_vs_invsum_gauss.png}
-      \caption{Gaussians dataset}
-      \label{fig:gauss_rec}
+    \hfill
+    \begin{subfigure}[t]{0.15\linewidth}
+      \includegraphics[width=\linewidth, height=5.5cm]{./lab3/PCA/PC_interpret/PC1+PC5.png}
+      \label{fig:few_pc}
     \end{subfigure}
-    \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth, height=4.7cm]{./lab3/PCA/rec_vs_invsum_digits.png}
-      \caption{Digits dataset}
-      \label{fig:digits_rec}
+    \hfill
+    \begin{subfigure}[t]{5.1cm}
+      \includegraphics[width=\linewidth, height= 5.1cm]{./lab3/PCA/PC_interpret/quantiles.png}
+      \label{fig:few_pc}
     \end{subfigure}
-    \begin{subfigure}[t]{0.3\linewidth}
-      \includegraphics[width=1\linewidth, height=4.7cm]{./lab3/PCA/regression_digits.png}
-      \caption{Reconstruction MSE linear fit}
-      \label{fig:regression}
+    \hfill
+    \begin{subfigure}[t]{5.0cm}
+      \includegraphics[width=\linewidth, height = 5.0cm]{./lab3/PCA/PC_interpret/Y1_X5.png}
+      \label{fig:many_pc}
     \end{subfigure}
-    \end{adjustwidth}
-    \caption{Plot of the reconstruction $MSE$ for each number of selected $k$ components (red),
-    against the sum of the variance of the last $256-k$ components (blue), on 
-  different datasets. Right figure plots their linear fit.}
-    \label{fig:rec_vs_cumsum}
+    \hfill \mbox{}
+    \caption{Reconstruction of four different samples (columns) with increasing
+      number of components (rows). Top row of each table contains the 
+    original samples. Vertical labels indicate the number of components. On the
+    left panel, MSE ranges between $0.25$ and $0.9$, for 1 and 4 PC respectively.
+  With 16 or more PC, MSE is always below $0.75$, reaching $0$ for 256 components.}
+    \label{fig:threes_pc}
   \end{figure}
+
   
 
   % still needs improvement. If I cannot expand the pages and add the
@@ -385,45 +400,11 @@
   almost the same result, as seen on \autoref{fig:many_pc}
   
 
-  \begin{figure}[h]
-    \centering
-    \begin{subfigure}[t]{0.16\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1.png}
-      \caption{PC 1}
-      \label{fig:PC1}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.16\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_02.png}
-      \caption{0.2}
-      \label{fig:quant02}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.16\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_04.png}
-      \caption{0.4}
-      \label{fig:quant04}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.16\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_06.png}
-      \caption{0.6}
-      \label{fig:quant06}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.16\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_08.png}
-      \caption{0.8}
-      \label{fig:quant08}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.16\linewidth}
-      \includegraphics[width=1\linewidth]{./lab3/PCA/PC_interpret/PC1_1.png}
-      \caption{1}
-      \label{fig:quant1}
-    \end{subfigure}
-    \caption{First principal component plotted (left) along with threes corresponding
+    First principal component plotted (left) along with threes corresponding
       to different quantiles, on the data distribution over that PC. Quantile below
     the image. % remove the following
     This component models cursivity
-  }
-    \label{fig:quantiles}
-  \end{figure}
+  
 
 
 

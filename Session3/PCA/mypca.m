@@ -1,4 +1,5 @@
-function [Et, reducedX, eigvals] = mypca(data, q, scale)   % q: desired dimensions
+function [Et, reducedX, eigvals, eig_trace] = mypca(data, q, scale)  
+% q: desired dimensions
     if nargin < 3
         scale = true;
     end
@@ -12,5 +13,6 @@ function [Et, reducedX, eigvals] = mypca(data, q, scale)   % q: desired dimensio
     end
     Et = eigvec';                   % eigvecs: p (original dims) * q
     reducedX = Et * (data - mean(data,2));
+    eig_trace = trace(all_eigvals);
 end
  

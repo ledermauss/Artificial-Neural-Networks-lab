@@ -16,10 +16,10 @@ end
     i = 0;
     for q = pc_start:pc_step:pc_end
         i = i + 1;
-        [Et, reduced, eigvals] = mypca(data, q);
+        [Et, reduced, eigvals, eig_trace] = mypca(data, q, false); % don't scale
         [~, error] = reconstruct_mypca(reduced, Et, data);
         if inv_sum == true
-            pc_table(i, :) = [q, error,  1 - sum(eigvals)];
+            pc_table(i, :) = [q, error,  eig_trace - sum(eigvals)];
             var_string = '1 - cumsum(var)';
         else
             pc_table(i, :) = [q, error, sum(eigvals)];

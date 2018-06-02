@@ -94,8 +94,8 @@ set(gca,'FontSize', 16);
 %% Regression
 % note: second col (y axis) is the MSE error, third the cumsum
 % regression: first target (x axis), later output (y axis)
-plotregression(digits_error(:,3), digits_error(:,2), 'Digits - Rec. Error fit'),
-xlabel("1 - Sum(k-eigvals)"), ylabel("Reconstruction Error")
+plotregression(digits_error(:,3), digits_error(:,2), 'Rec. Error - last eigvals fit'),
+xlabel("Sum(k:end) eigvals"), ylabel("Reconstruction Error")
 set(gca,'FontSize', 16);
 
 %% Random data %%
@@ -106,29 +106,27 @@ title('Reconstruction MSE vs eigenvalues variance (Gaussians)')
 set(gca,'FontSize', 16);
 
 %% Regression
-plotregression(g_error(:,3), g_error(:,2), 'Digits - Rec. Error fit'),
-xlabel("1 - Sum(k-eigvals)"), ylabel("Reconstruction Error")
+plotregression(g_error(:,3), g_error(:,2), 'Gaussians - Rec. Error fit'),
+xlabel("Sum(k:end) eigvals"), ylabel("Reconstruction Error")
 set(gca,'FontSize', 16);
 
 %% Random trace vs digit trace
-[~, ~, evals_threes] = mypca(threes', 50);
-[~, ~, evals_gauss]  = mypca(gauss, 50);
+[~, ~, evals_threes] = mypca(threes', 50, false);
+[~, ~, evals_gauss]  = mypca(gauss, 50, false);
 plot(1:50, evals_gauss, 'g', 1:50, evals_threes, 'b')
-legend("Random eigenvalues", "Digits eigenvalues", 'Location', 'north'),
-xlabel('Selected components'), ylabel('Scaled eigenvalues (variance)'),
-title("Digits vs Random trace"),
+legend("Gaussians eigenvalues", "Digits eigenvalues", 'Location', 'north'),
+xlabel('Components'), ylabel('Eigenvalues (variance)'),
+title("Digits vs Gaussians trace"),
 set(gca, 'FontSize', 16)
 
-%% rec error vs cumsum - digits
-figure;
-digits_cumsum = error_by_pc(threes,1,256,5, false);
-title('Reconstruction MSE vs eigenvalues variance (Digits)')
-set(gca,'FontSize', 14);
-%% rec error vs cumsum - gauss
-figure;
-gauss_cumsum = error_by_pc(gauss, 1,256,5, false);
-title('Reconstruction MSE vs eigenvalues variance (Digits)')
-set(gca,'FontSize', 14);
+%% Digits vs random rec MSE
+plot(g_error(:,1), g_error(:,3)./g_error(1,3), 'g', ...
+digits_error(:,1), digits_error(:,3)/digits_error(1,3), 'b'),
+legend(' Gaussians MSE', 'Digits MSE', 'Location', 'north')
+xlabel('Selected Components'),
+title('Digits rec. MSE vs Gaussians rec. MSE (scaled)')
+set(gca,'FontSize', 16),ylim([0 1])
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Component meaning           %%
@@ -193,23 +191,23 @@ for i = 1:length(vals)
     end
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%
 %% Cherrypicking good threes for the first component
 % Just PC1 eigvec
-ax = gca;
-outerpos = ax.OuterPosition;
-ti = ax.TightInset; 
-left = outerpos(1) + ti(1);
-bottom = outerpos(2) + ti(2);
-ax_width = outerpos(3) - ti(1) - ti(3);
-ax_height = outerpos(4) - ti(2) - ti(4);
-ax.Position = [left bottom ax_width ax_height];
+
+[ha, pos] = tight_subplot(2, 1, [0.07 0.01],[.01 .07],[.01 .01]);
+
+axes(ha(1))   
 print_digit(Et' * 3, 1),    
-set(gca,'XTick',[], 'Ytick', [], 'Visible', 'off'); % remove X and Y labels
-%first_com = Et(comp,:) * (threes - mean(threes, 2));
+set(gca,'XTick',[], 'Ytick', []), title('PC 1 ', 'FontSize', 16); % remove X and Y labels
+axes(ha(2))
+print_digit(Et' * 3, 5),  
+set(gca,'XTick',[], 'Ytick', []), title('PC 5', 'FontSize', 16); % remove X and Y labels
+%first_com = Et(comp,:) * (threes - mean(threes, 2),);
 %vals = [0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
 %quant = quantile(first_com, vals);
 
-% all the others
+%% all the others
 col = 3
 for i=1:5
     print_digit(threes, indexes(i, col))
