@@ -291,11 +291,140 @@
   capacity and retrieval. In this section I will illustrate their behaviour using
   them to retrieve original digits from noisy samples.
 
+  First, the network receives an input consisting on the initial attractors. 
+  In this case, the attractors are 9 handwritten digits, scanned as $15\times14$
+  pixel images. So, the network has 240 features, as many as the attractors.
+  The network can store up to $N / (4 \times log(N)$ patterns, $N = 240$. That
+  result is 10.86, so the net should be able to store all of them without
+  getting spurious patterns.
   \begin{figure}[h]
     \centering
-    \includegraphics{lab2/digits/n1i10.png}
-    \caption{}
+    \includegraphics[width=0.6\linewidth]{lab2/digits/n1i20.png}
+    \caption{Retrieved digits after 10 iterations, using a noise factor of 1. 
+    Reconstruction is perfect, all patterns are retrieved}
     \label{fig:l2_no_noise}
+  \end{figure}
+
+  \begin{figure}[h]
+    \centering
+    \begin{subfigure}[c]{0.07\linewidth}
+      \includegraphics[width=\linewidth,height=6.1cm]{lab2/digits/noisy.png}
+      \caption{Noisy}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[c]{0.07\linewidth}
+      \includegraphics[width=\linewidth,height=6cm]{lab2/digits/col_n10i10.png}
+      \caption{10}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[c]{0.07\linewidth}
+      \includegraphics[width=\linewidth,height=6cm]{lab2/digits/col_n10i20.png}
+      \caption{20}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[c]{0.07\linewidth}
+      \includegraphics[width=\linewidth,height=6cm]{lab2/digits/col_n10i30.png}
+      \caption{30}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[c]{0.07\linewidth}
+      \includegraphics[width=\linewidth,height=6cm]{lab2/digits/col_n10i40.png}
+      \caption{40}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[c]{0.07\linewidth}
+      \includegraphics[width=\linewidth,height=6cm]{lab2/digits/col_n10i50.png}
+      \caption{50}
+    \end{subfigure}
+    \caption{Retrieval process of the Hopfield network, varying the number
+      of iterations, in the subcaptions. Noise factor is 10. 
+      At first the network has not reached
+      any minima, so it delivers noisy digits. As it keeps iterating, it approaches
+      the final state. Here all original attractors are memorized, but noise is so 
+      strong that the network can retrieve the wrong pattern.}
+    \label{fig:l2_noisy}
+  \end{figure}
+
+  Indeed, no spurious pattern is retrieved. With low noise, as in 
+  \autoref{fig:l2_no_noise}, reconstruction is perfect even after 10 iterations,
+  and it remains stable afterwards (low \emph{crosstalk}). On 
+  \autoref{fig:l2_noisy} noise is way higher. It takes more time to converge,
+  so the digits retrieved during the first 40 iterations still have some noise,
+  equilibrium is only reached after 50 epochs.
+  Furthermore, corruption has pulled the data points too close to the 
+  wrong attractors,
+  so the wrong digit is commonly retrieved. But, as dimensionality is so high,
+  all patterns are properly stored, and there is no convergence on spurious, 
+  local minima. 
+
+  \subsection{Elman network}
+  Elman networks are a kind of Recurrent Neural Networks, were the output is
+  fed to the input for the following training/simulation step. Therefore, they
+  can learn temporal patterns from data, and they are often used for time series
+  prediction.
+
+  I have tested the network on the \emph{Hammersteim system} data using
+  different configurations. First, I have tuned the training set size:
+  I have used 100, 200, 300 and 500 datapoints under the default configurations
+  (50 neurons, 500 training epochs), and they have delivered 0.41, 0.30, 0.22 and
+  0.07 MSE on the test set, respectively. So, the network performance improves
+  as it has more data points, similarly to other kind of networks.
+
+  
+  Increasing the neurons (beyond 50) decreases performance: testing with 50, 100,
+  150 and 250 I have obtained MSE of 0.14, 1.52, 2.20 and 3.78 respectively.
+  50 is already good; more than that overparametrizes the network.
+
+  I also also have tried different architectures and training epochs, shown in 
+  \autoref{tab:l2_elman_transfers}. As expected, the second layer should
+  use a linear activation function: having non linear activation functions on
+  the last layer pushes prediction values towards 1 and -1. Of the both 
+  tested functions, the hyperbolic tangent works best. Increasing epochs
+  improves performance until they exceed 100; particularly on the \texttt{purelin}
+  function. This means that the network is overfitting beyond that point.
+
+  Finally, I am showing the result of training and testing the network using
+  an optimal configuration in \autoref{fig:l2_optimal_elman}.
+
+
+  \begin{table}
+    % this is a lie: it was th eother way around
+    \centering
+    \begin{tabular}{@{}llrrrr@{}}
+      \toprule
+      2nd layer& 1st layer& 10 & 50 & 100 & 500 \\
+      \midrule % using 'tansig' second
+      \multirow{2}{*}{\texttt{purelin}} & \texttt{tansig}  & 1.05  &  0.32  &
+                                                             0.27  &  0.38 \\
+      & \texttt{logisg}  & 0.97  &  0.92  &  0.31  &  0.43 \\
+      \bottomrule
+    \end{tabular}
+    \hfill
+    \begin{tabular}{@{}lllrrrr@{}}
+      \toprule
+      2nd layer& 1st layer& 10 & 50 & 100 & 500 \\
+      \midrule % using 'tansig' second
+      \multirow{2}{*}{\texttt{tansig}} & \texttt{tansig}  & 44.46 &  1.57  &
+                                                             2.81  &  0.71 \\
+      & \texttt{logisg}  & 1.35  &  0.95  &  0.92  &  1.26 \\
+      \bottomrule
+    \end{tabular}
+    \caption{MSE for different combinations of training epochs and training
+    functions. The best architecture seems to be having a \texttt{purelin} 
+    architecture on the second layer, and a \texttt{logsig} on the second. All
+    nets had 50 neurons, and were trained using 500 datapoints. The shown results
+    have been averaged over 20 experiments}
+    \label{tab:l2_elman_transfers}
+  \end{table}
+
+  \begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\linewidth]{lab2/elman_optimal.png}
+    \caption{Test set function estimation on the \emph{Hammersteim system}, using
+    the optimal parameter configuration from the previous experiments: 50 hidden
+    units, 100 epochs, an hyperbolic tangent transfer function on the first layer,
+    a linear function on the second and 500 points for training.}
+    \label{fig:l2_optimal_elman}
   \end{figure}
 
 
