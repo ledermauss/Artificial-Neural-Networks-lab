@@ -284,45 +284,63 @@
 
 
 \newpage
+\section{Lab 2}
+  \subsection{Hopfield Network}
+  Hopfield networks are recurrent NN with binary valued units that can store
+  pattern according to the principles of associative memory, regarding storage
+  capacity and retrieval. In this section I will illustrate their behaviour using
+  them to retrieve original digits from noisy samples.
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics{lab2/digits/n1i10.png}
+    \caption{}
+    \label{fig:l2_no_noise}
+  \end{figure}
+
+
+  \newpage
 \section{Unsupervised Learning}
   \subsection{Principal Component Analysis}
-  The goal of this section is to understand the meaning and consequences of using
-  PCA, applied to the \emph{threes} dataset. \autoref{fig:first_task} summarizes the data:
-  on the right I present the average \emph{three}, on the left the eigenvalues, 
-  scaled over their sum. The first components explain most of the variance:
-  just 12 explain 63\%, and with 50 it adds up to 90\%. Therefore, 50 components 
-  should already deliver a good reconstruction of the data. The right panel
-  of \autoref{fig:many_pc} proves it; with 64 and 128 PC the result
-  is almost the original sample. With 256 PC the recovered image is exactly
-  the same, and the \emph{MSE} is 0. With data $X \in {\rm I\!R}^{d \times N}$,
-  being $d$ the input feature space; $V \in {\rm I\!R}^{d \times s}$ the
-  eigenvector matrix, $s$ selected components; and $X_s=V^{t}X$ the data
-  projected on those components. If $s=d$, then $VV^{t}=I$ (full rank orthogonal matrix).
-  Then, $\hat{X} = VX_s = VV^{t}X = X$. 
   \begin{figure}[h]
     \begin{adjustwidth}{-1cm}{-1cm}
     \centering
     \begin{subfigure}[t]{0.3\linewidth}
       \includegraphics[width=1\linewidth, height=4.4cm]{./lab3/PCA/digits_vs_random_trace.png}
-      \label{fig:trace_compared}
+      \caption{Eigenvalues by PC}
+      \label{fig:l3_traces}
     \end{subfigure}
     \begin{subfigure}[t]{0.29\linewidth}
       \includegraphics[width=1\linewidth, height=4.4cm]{./lab3/PCA/digits_vs_random_recMSE.png}
-      \caption{Digits dataset}
-      \label{fig:digits_rec}
+      \caption{Rec. \emph{MSE} by PC (scaled)}
+      \label{fig:l3_rec_MSE}
     \end{subfigure}
     \begin{subfigure}[t]{0.3\linewidth}
       \includegraphics[width=1\linewidth, height=4.3cm]{./lab3/PCA/regression.png}
-      \caption{Reconstruction MSE linear fit}
-      \label{fig:regression}
+      \caption{Lin. fit: MSE and left-out variance}
+      \label{fig:l3_regression}
     \end{subfigure}
     \end{adjustwidth}
-    \caption{Plot of the reconstruction $MSE$ for each number of selected $k$ components (red),
-    against the sum of the variance of the last $256-k$ components (blue), on 
-  different datasets. Right figure plots their linear fit.}
-    \label{fig:rec_vs_cumsum}
+    \caption{Comparison between a synthetic dataset (green) and the 
+      \emph{threes} dataset, using their eigenvalues by PC (left) and their
+      reconstruction error (centre, scaled by their max. value).
+      Right image shows a perfect linear relation between recovery error and
+      the summed variance of all the components but the first $k$ ones.}
+    \label{fig:l3_first_task}
   \end{figure}
-  
+
+  The goal of this section is to understand the meaning and consequences of using
+  PCA. \autoref{fig:l3_first_task} compares its behaviour on the \emph{threes} 
+  dataset and on a random dataset of 256 I.d. Gaussian features. For the 
+  \emph{threes} most information lies on the first PC: according to
+  \autoref{fig:l3_traces}, 50 components explain already 90\% of the variance. On
+  the Gaussians, that makes less than 40\%. Therefore, 50 components 
+  should already deliver a good reconstruction of the digits, as 
+  \autoref{fig:l3_rec_MSE} shows: MSE decreases steeply until then, and slowly 
+  afterwards. On the other hand, on the Gaussian dataset information is 
+  distributed evenly among the components. Both eigenvalues and MSE do not 
+  decrease so sharply, there is no optimal transformation of the data such 
+  that more information lies on a specific direction. 
 
   \begin{figure}[h]
     \centering
@@ -341,162 +359,119 @@
     \hfill \mbox{}
     \caption{Reconstruction of four different samples (columns) with increasing
       number of components (rows). Top row of each table contains the 
-    original samples. Vertical labels indicate the number of components. On the
-    left panel, MSE ranges between $0.25$ and $0.9$, for 1 and 4 PC respectively.
-  With 16 or more PC, MSE is always below $0.75$, reaching $0$ for 256 components.}
-    \label{fig:threes_pc}
+    original samples. Vertical labels indicate the number of components}
+    \label{fig:l3_threes_pc}
   \end{figure}
 
-  With Gaussian data 50 components are not enough: they explain only 43\% of the 
-  variance, and deliver a reconstruction error of 0.77 (\autoref{fig:gauss_rec}),
-  whereas in the digits it is already below 0.1 (\autoref{fig:digits_rec}). 
-  It makes sense, because in random data all features carry the same variance, 
-  there is no optimal direction.  Therefore, the eigenvalues sink more gradually,
-  as in \autoref{fig:first_task}.  Anyway, both datasets show a strong 
-  correlation between the sum of variance of the last $k$ left-out components 
-  and the reconstruction $MSE$, displayed in \autoref{fig:regression}. The shape
-  of the curve suggests that the relationship between them is logarithmic, 
-  rather than linear.
-
+  \paragraph{Visual reconstruction} a sample with few components 
+  if much different from the original image, as the images on 
+  \autoref{fig:l3_threes_pc} show. These recovered images seem more similar 
+  to the average three. %TODO: put average three somewhere
+  The reason is that the first components model the main structure underlying 
+  all the data, the \emph{essence} of the \emph{threes}.
+  As more components are added, reconstruction becomes more accurate.  The last 
+  components model the noise, the particularities of each data point. Since
+  most variance lies below 50 PC, any reconstruction with more PC delivers
+  almost the same result, there is little margin of improvement. With
+  With 256 PC the recovered image is exactly the same, and the \emph{MSE} is 0.
+  %% maybe remove this
+  There is a mathematical proof: being data $X \in {\rm I\!R}^{d \times N}$,
+  with $d$ the input feature space; $V \in {\rm I\!R}^{d \times s}$ the
+  eigenvector matrix, $s$ selected components; and $X_s=V^{t}X$ the data
+  projected on those components. If $s=d$, then $VV^{t}=I$ (full rank orthogonal matrix).
+  Then, $\hat{X} = VX_s = VV^{t}X = X$. 
+  
   \begin{figure}[h]
     \centering
     \hfill
     \begin{subfigure}[t]{0.15\linewidth}
       \includegraphics[width=\linewidth, height=5.5cm]{./lab3/PCA/PC_interpret/PC1+PC5.png}
-      \label{fig:few_pc}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[t]{5.1cm}
+    \begin{subfigure}[t]{5.4cm}
       \includegraphics[width=\linewidth, height= 5.1cm]{./lab3/PCA/PC_interpret/quantiles.png}
-      \label{fig:few_pc}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[t]{5.0cm}
+    \begin{subfigure}[t]{5.4cm}
       \includegraphics[width=\linewidth, height = 5.0cm]{./lab3/PCA/PC_interpret/Y1_X5.png}
-      \label{fig:many_pc}
     \end{subfigure}
     \hfill \mbox{}
-    \caption{Reconstruction of four different samples (columns) with increasing
-      number of components (rows). Top row of each table contains the 
-    original samples. Vertical labels indicate the number of components. On the
-    left panel, MSE ranges between $0.25$ and $0.9$, for 1 and 4 PC respectively.
-  With 16 or more PC, MSE is always below $0.75$, reaching $0$ for 256 components.}
-    \label{fig:threes_pc}
+    \caption{1st and 5th PC (left), and data points when projected on them 
+    (centre). X axis correspond to the fifth, Y to the first. Red dots 
+    show the closest data point to a quantile on the projections distribution.
+    These samples are shown on the right image, with their corresponding quantile.}
+    \label{fig:l3_pc_interpret}
+  \end{figure}
+  
+  \paragraph{Component interpretation} each PC models data particularities, that
+  can be used to find patterns on it, and even for clustering. 
+  \autoref{fig:l3_pc_interpret} shows a representation of the first and fifth 
+  component. Then, I have taken the points corresponding to different quantiles
+  of the data, when projected on those components. The results are shown on the
+  right image. PC 1 models cursiveness: threes on the Y axis lean to the left
+  side on the low quantiles (top), and become totally cursive on the bottom rows.
+  The fifth (X axis) models thickness on the horizontal strokes: digits at the 
+  highest quantile (quantile) are the thickest.
+
+  
+  \subsection{Self Organizing Maps}
+  %https://nl.mathworks.com/help/nnet/ug/cluster-with-self-organizing-map-neural-network.html
+  \begin{figure}[h]
+    \begin{adjustwidth}{-1cm}{-1cm}
+    \centering
+    \begin{subfigure}[t]{0.32\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/SOM/init_hex.png}
+      \caption{Network initialization.}
+      \label{fig:l3_init}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.31\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/SOM/epoch1_hex.png}
+      \caption{Training after one epoch}
+      \label{fig:l3_epoch1}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.31\linewidth}
+      \includegraphics[width=1\linewidth]{./lab3/SOM/epoch5_hex.png}
+      \caption{Final result}
+      \label{fig:l3_epoch5}
+    \end{subfigure}
+    \end{adjustwidth}
+    \caption{Training state evolution of a SOM with 25 neurons, set in a 
+    hexagonal grid of $5\times5$. On the first epoch, many neurons
+    are pulled together into the regions of high variance, since their 
+    neighbourhood radius is very large. At later stages, neighbourhood size 
+    shrinks and less neurons are pulled from their position.}
+    \label{fig:l3_hex_grid}
   \end{figure}
 
-  
+  SOM deliver meaningful representations of the data (vector quantization) using
+  competitive learning to make their neurons learn the data distribution. 
+  Basically, as a neuron “wins” over the others for a data point, its weight is
+  updated so it is closer to the input, according to the Konohen rule. In this 
+  rule The new state depends on both the previous state and the input, and each
+  has a different weight (parameter $\alpha$). Besides, neurons also pull their
+  neighbours, defined by a radius on some distance metric and grid disposition. 
+  \autoref{fig:l3_hex_grid} showcases the learning process of the SOM. Furthermore,
+  they can also be used for clustering, with as many clusters as neurons. 
+  \autoref{tab:l3_som_grid} compares clustering performance with different 
+  configurations.
 
-  % still needs improvement. If I cannot expand the pages and add the
-  % components interpretation, put this (model the main structure of the data)
-  % in the threes footnote, and remove this paragraph
-  \paragraph{Visual interpretation} a sample with few components 
-  if much different from the original image, as the images on \autoref{fig:few_pc} 
-  show. These recovered images seem more similar to the average \emph{three} of 
-  \autoref{fig:first_task}. The reason is that the first components model the
-  main structure underlying all the data, the \emph{essence} of the \emph{threes}.
-  As more components are added, reconstruction becomes more accurate.  The last 
-  components model the noise, the particularities of each data point. Since
-  most variance lies below 50 PC, any reconstruction with more than those delivers
-  almost the same result, as seen on \autoref{fig:many_pc}
-  
-
-    First principal component plotted (left) along with threes corresponding
-      to different quantiles, on the data distribution over that PC. Quantile below
-    the image. % remove the following
-    This component models cursivity
-  
-
-
-
-
-  \subsection{Self Organizing Map}
-  %https://nl.mathworks.com/help/nnet/ug/cluster-with-self-organizing-map-neural-network.html
-  \Blindtext
-
-
-
-  \begin{figure}[h]
+  \begin{table}[h]
     \centering
-    \hfill
-    \begin{tabular}{@{}rcrrrcrrrcrrr@{}}
+    \begin{tabular}{@{}llrrrrrrr@{}}
       \toprule
-      \multicolumn{1}{l}{\multirow{2}{*}{$Iterations$}} & \phantom{a} &% fake multicolumn alligns mulitrow
-        \multicolumn{3}{c}{\textbf{Hexagonal topology}} & \phantom{a} &
-        \multicolumn{3}{c}{\textbf{Grid topology}}      & \phantom{a} &
-        \multicolumn{3}{c}{\textbf{Random topology}} \\
-      \cmidrule{3-5} \cmidrule{7-9} \cmidrule{11-13}
-      && Link & Euc. & Box && Link & Euc. & Box && Link & Euc. & Box  \\
+      & \phantom{ab}  & \texttt{linkdist} & \phantom{ab} & \texttt{dist} & 
+      \phantom{ab} & \texttt{boxdist} & \phantom{ab} & \texttt{mandist} \\
       \midrule
-      $initHood = 3$ \\
-      \emph{100}  &&  0.7240  &  0.7274  &  0.7247  &&  0.7261  &  0.7240  &  0.7212  &&  0.6934  &  0.6799  &  0.6492 \\
-      %\emph{150}  &&  0.7240  &  0.7219  &  0.7240  &&  0.7247  &  0.7219  &  0.7219  &&  0.6792  &  0.6522  &  0.6214 \\
-      \emph{200}  &&  0.7275  &  0.7239  &  0.7247  &&  0.7268  &  0.7246  &  0.7240  &&  0.6940  &  0.6225  &  0.6210 \\
-      %\emph{250}  &&  0.7233  &  0.7240  &  0.7226  &&  0.7232  &  0.7275  &  0.7233  &&  0.7253  &  0.6497  &  0.5628 \\
-      \emph{300}  &&  0.7275  &  0.7253  &  0.7260  &&  0.7219  &  0.7219  &  0.7261  &&  0.7096  &  0.6489  &  0.6083 \\
-      %\emph{350}  &&  0.7212  &  0.7240  &  0.7212  &&  0.7254  &  0.7212  &  0.7247  &&  0.7226  &  0.6081  &  0.5631 \\
-      \emph{400}  &&  0.7212  &  0.7232  &  0.7233  &&  0.7240  &  0.7240  &  0.7247  &&  0.7126  &  0.6051  &  0.6660 \\
-      %\emph{450}  &&  0.7233  &  0.7226  &  0.7240  &&  0.7254  &  0.7268  &  0.7253  &&  0.6827  &  0.5925  &  0.5917 \\
-      \emph{500}  &&  0.7261  &  0.7240  &  0.7254  &&  0.7233  &  0.7240  &  0.7253  &&  0.7226  &  0.6214  &  0.6061 \\
-      $initHood = 4$ \\
-      \emph{100}  &&  0.7219  &  0.7232  &  0.7219  &&  0.7247  &  0.7254  &  0.7240  &&  0.6815  &  0.6366  &  0.6518 \\
-      %\emph{150}  &&  0.7232  &  0.7247  &  0.7254  &&  0.7261  &  0.7247  &  0.7233  &&  0.6815  &  0.6506  &  0.6221 \\
-      \emph{200}  &&  0.7239  &  0.7240  &  0.7240  &&  0.7267  &  0.7205  &  0.7240  &&  0.6942  &  0.6379  &  0.6355 \\
-      %\emph{250}  &&  0.7247  &  0.7282  &  0.7233  &&  0.7233  &  0.7247  &  0.7254  &&  0.7226  &  0.5920  &  0.6504 \\
-      \emph{300}  &&  0.7233  &  0.7240  &  0.7240  &&  0.7261  &  0.7219  &  0.7233  &&  0.7233  &  0.6351  &  0.6499 \\
-      %\emph{350}  &&  0.7226  &  0.7247  &  0.7247  &&  0.7254  &  0.7233  &  0.7240  &&  0.7101  &  0.6213  &  0.6066 \\
-      \emph{400}  &&  0.7240  &  0.7239  &  0.7246  &&  0.7233  &  0.7254  &  0.7233  &&  0.6801  &  0.6055  &  0.5944 \\
-      %\emph{450}  &&  0.7226  &  0.7240  &  0.7261  &&  0.7254  &  0.7275  &  0.7233  &&  0.7239  &  0.6071  &  0.6090 \\
-      \emph{500}  &&  0.7226  &  0.7232  &  0.7261  &&  0.7233  &  0.7219  &  0.7226  &&  0.7112  &  0.6081  &  0.6047 \\
-      $initHood = 5$ \\
-      \emph{100}  &&  0.7233  &  0.7247  &  0.7219  &&  0.7240  &  0.7233  &  0.7240  &&  0.6963  &  0.7121  &  0.6512 \\
-      %\emph{150}  &&  0.7240  &  0.7233  &  0.7212  &&  0.7247  &  0.7253  &  0.7247  &&  0.7240  &  0.6626  &  0.6357 \\
-      \emph{200}  &&  0.7254  &  0.7225  &  0.7254  &&  0.7247  &  0.7247  &  0.7275  &&  0.7079  &  0.6062  &  0.6524 \\
-      %\emph{250}  &&  0.7261  &  0.7226  &  0.7246  &&  0.7239  &  0.7233  &  0.7226  &&  0.7121  &  0.6229  &  0.6485 \\
-      \emph{300}  &&  0.7239  &  0.7233  &  0.7219  &&  0.7233  &  0.7260  &  0.7254  &&  0.7103  &  0.5344  &  0.5914 \\
-      %\emph{350}  &&  0.7246  &  0.7240  &  0.7247  &&  0.7240  &  0.7233  &  0.7247  &&  0.6940  &  0.6525  &  0.6510 \\
-      \emph{400}  &&  0.7240  &  0.7261  &  0.7240  &&  0.7240  &  0.7261  &  0.7219  &&  0.6935  &  0.6496  &  0.6532 \\
-      %\emph{450}  &&  0.7261  &  0.7275  &  0.7232  &&  0.7219  &  0.7233  &  0.7219  &&  0.7091  &  0.6560  &  0.6344 \\
-      \emph{500}  &&  0.7261  &  0.7226  &  0.7240  &&  0.7226  &  0.7233  &  0.7226  &&  0.6954  &  0.6041  &  0.5914 \\
-      $initHood = 50$ \\
-      \emph{100}  &&  0.7254  &  0.7240  &  0.7247  &&  0.7226  &  0.7239  &  0.7226  &&  0.7240  &  0.7240  &  0.7246 \\
-      %\emph{150}  &&  0.7219  &  0.7247  &  0.7219  &&  0.7261  &  0.7268  &  0.7233  &&  0.7226  &  0.7261  &  0.7268 \\
-      \emph{200}  &&  0.7240  &  0.7240  &  0.7247  &&  0.7226  &  0.7240  &  0.7199  &&  0.6639  &  0.7205  &  0.7212 \\
-      %\emph{250}  &&  0.7239  &  0.7233  &  0.7233  &&  0.7253  &  0.7219  &  0.7212  &&  0.7084  &  0.7068  &  0.7240 \\
-      \emph{300}  &&  0.7247  &  0.7240  &  0.7260  &&  0.7233  &  0.7261  &  0.7247  &&  0.7103  &  0.7212  &  0.7213 \\
-      %\emph{350}  &&  0.7226  &  0.7268  &  0.7261  &&  0.7268  &  0.7240  &  0.7247  &&  0.7112  &  0.7247  &  0.7212 \\
-      \emph{400}  &&  0.7240  &  0.7247  &  0.7247  &&  0.7254  &  0.7240  &  0.7240  &&  0.7070  &  0.7070  &  0.7240 \\
-      %\emph{450}  &&  0.7219  &  0.7254  &  0.7233  &&  0.7253  &  0.7233  &  0.7212  &&  0.7103  &  0.7112  &  0.7077 \\
-      \emph{500}  &&  0.7226  &  0.7226  &  0.7254  &&  0.7226  &  0.7240  &  0.7282  &&  0.7091  &  0.7226  &  0.7091 \\
-        %$initHood = 100$ \\
-%        ARI_matrix(:,:,1) =
-%
-%    0.7254    0.7275    0.7198
-%    0.7219    0.7254    0.7261
-%    0.7233    0.7260    0.7240
-%    0.7254    0.7253    0.7240
-%    0.7239    0.7219    0.7233
-%    0.7253    0.7240    0.7254
-%    0.7240    0.7219    0.7247
-%    0.7247    0.7226    0.7261
-%    0.7260    0.7233    0.7233
-%
-%
-%ARI_matrix(:,:,2) =
-%
-%    0.7233    0.7247    0.7246
-%    0.7219    0.7240    0.7253
-%    0.7233    0.7226    0.7247
-%    0.7254    0.7205    0.7240
-%    0.7233    0.7233    0.7282
-%    0.7232    0.7254    0.7268
-%    0.7233    0.7253    0.7247
-%    0.7240    0.7219    0.7261
-%    0.7247    0.7233    0.7253
-         \bottomrule
-      \end{tabular} 
-      \caption{}
-      \label{fig:bayes}
-    \end{figure}
+      \textbf{Hexagonal} &&  $0.7240$  &&   $0.7240$  &&   $0.7254$  &&  $0.7239$\\
+      \textbf{Grid}      &&  $0.7254$  &&   $0.7233$  &&   $0.7247$  &&  $0.7226$\\
+      \textbf{Random}    &&  $0.6817$  &&   $0.7240$  &&   $0.7246$  &&  $0.7240$\\
+      \bottomrule
+    \end{tabular} 
+    \caption{Comparison of different topologies and distances for the iris datset,
+    using a $3 \times 1$ network for clustering. The displayed numbers correspond 
+  to the ARI index.}
+    \label{fig:l3_som_grid}
+  \end{table}
 
 
 

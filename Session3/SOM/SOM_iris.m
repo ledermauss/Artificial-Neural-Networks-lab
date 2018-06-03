@@ -29,7 +29,7 @@ outputs = sim(net,X');
 [~,assignment]  =  max(outputs);
 
 plot_options = []
-plot_options.labels =  true_labels
+plot_options.labels =  fliplr(true_labels')'
 %plot_options.labels =  assignment
 
 ml_plot_data(X, plot_options)
@@ -47,44 +47,54 @@ ARI=RandIndex(assignment,true_labels);
 initHood = 100;
 max_exp = 20;
 topologies = {'hextop', 'gridtop', 'randtop'};
-distances = {'linkdist', 'dist', 'boxdist'};
-iters = [100, 150, 200, 250, 300, 350, 400, 450, 500];
+distances = {'linkdist', 'dist', 'boxdist', 'mandist'};
 
-ARI_matrix = zeros(length(iters), length(distances), length(topologies));
+ARI_matrix = zeros(length(topologies),length(distances));
+
 t = 0;
-d = 0;
-i = 0;
-
 for topology = topologies
     t = t + 1
-    i = 0;
-    for iter = iters
-        i = i + 1
-        d = 0;
-        for distance = distances
-            d = d + 1
-            ARI_vec = [];
-            for e=1:max_exp
-                net = selforgmap(gridsize, iter, initHood, topology{1}, distance{1});
-                net.trainParam.showWindow = false;
-                net = train(net,X');
-                outputs = sim(net,X');
-                [~,assignment]  =  max(outputs);
-                ARI = RandIndex(assignment, true_labels);
-                ARI_vec = [ARI_vec; ARI];
-            end
-            ARI = mean(ARI_vec);
-            ARI_matrix(i, d, t) = ARI
+    d = 0
+    for distance = distances
+        d = d + 1
+        ARI_vec = [];
+        for e=1:max_exp
+            net = selforgmap(gridsize, iter, initHood, topology{1}, distance{1});
+            net.trainParam.showWindow = false;
+            net = train(net,X');
+            outputs = sim(net,X');
+            [~,assignment]  =  max(outputs);
+            ARI = RandIndex(assignment, true_labels);
+            ARI_vec = [ARI_vec; ARI];
         end
+        ARI = mean(ARI_vec);
+        ARI_matrix(t, d) = ARI
     end
 end
 
-%%
-iter = 100;
-initHood = 3;
+%% Different epochs
+
 topologyFcn = 'hextop';    %  'hextop'(*), 'gridtop' and 'randtop'
-distanceFcn = 'linkdist';  % 'linkdist'(*), 'dist' and 'boxdist'
-net = selforgmap([3 3], iter, initHood, topologyFcn, distanceFcn)
+distanceFcn = 'dist';  % 'linkdist'(*), 'dist', 'mandist' 'boxdist'
+net = selforgmap([5 5], iter, initHood, topologyFcn, distanceFcn)
 % plot before training
 net = configure(net, X')
-plotsompos(net,X')
+plotsompos(net, X'), set(gca, 'FontSize', 14)
+
+for epochs = [1, 5, 100]
+net.trainParam.epochs = epochs;
+raul = train(net, X')
+outputs = sim(raul,X');
+[~,assignment]  =  max(outputs);
+%plotsompos(raul, X'), set(gca, 'FontSize', 14)
+ARI=RandIndex(assignment,true_labels)
+pause()
+end
+
+%% Different neurons
+topologyFcn = 'hextop';    %  'hextop'(*), 'gridtop' and 'randtop'
+distanceFcn = 'mandist';  % 'linkdist'(*), 'dist' and 'boxdist'
+net = selforgmap([3 1], iter, initHood, topologyFcn, distanceFcn)
+% plot before training
+net = train(net, X')
+plotsompos(net, X'), set(gca, 'FontSize', 14)
