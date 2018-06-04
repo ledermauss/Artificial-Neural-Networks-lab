@@ -181,8 +181,8 @@
   in terms of speed and performance is the \emph{Levenberg-Marquardt} (lm)
   algorithm: it trains the fastest and it reaches better performance
   than the other ones under the same configurations. \emph{Gradient descent}
-  is by far the worst, both in speed and accuracy. The reason is that [maybe 
-  that looks for the best option/not optimized -check]
+  is by far the worst, both in speed and accuracy. %The reason is that [maybe 
+  %that looks for the best option/not optimized -check]
 
   \subsubsection{Noisy data}
     \begin{figure}[h]
@@ -596,11 +596,124 @@
       \textbf{Random}    &&  $0.6817$  &&   $0.7240$  &&   $0.7246$  &&  $0.7240$\\
       \bottomrule
     \end{tabular} 
-    \caption{Comparison of different topologies and distances for the iris datset,
+    \caption{Comparison of different topologies and distances for the iris dataset,
     using a $3 \times 1$ network for clustering. The displayed numbers correspond 
   to the ARI index.}
-    \label{fig:l3_som_grid}
+    \label{tab:l3_som_grid}
   \end{table}
+
+  \section{Lab 4}
+    \subsection{Stacked autoencoders}
+    \begin{table}[h]
+      \centering
+      \begin{tabular}{@{}lrrrrr@{}}
+        \toprule
+        && \multicolumn {2}{c}{Accuracy on Autoencoder} \\
+        \cmidrule{3-4} 
+        Layers & Hidden units & Before tuning & After tuning & 
+        Regular net accuracy & \textbf{Improvement} \\
+        \midrule
+        2   & [100]           &  98.38   &  98.92  &   97.60  &  \textbf{1.35}\% \\
+        3   & [100 81]        &  78.82   &  99.92  &   96.68  &  \textbf{3.35}\% \\
+        4   & [100 81 64]     &  38.22   &  99.78  &   96.92  &  \textbf{2.97}\% \\
+        5   & [100 81 64 49]  &  21.50   &  99.40  &   97.58  &  \textbf{1.87}\% \\
+        \bottomrule
+      \end{tabular} 
+      \caption{Evaluation of different deep architectures. \emph{Hidden layers} 
+      indicates the neurons on each layer (from the first to the last), on both
+      the autoencoders and the regular feed forward net. The final column shows
+      the improvement of the stacked architecture over the feed forward net,
+      in digits classification. For each row, both type of nets share the same
+      structure}
+      \label{tab:l4_autoencoders}
+    \end{table}
+    % maybe remove this
+  % \begin{figure}[htpb]
+  %   \centering
+  %   \includegraphics[width=\linewidth]{lab4/deep_architecture.png}
+  %   \caption{5 layer architecture of autoencoders, corresponding to last row
+  %   of \autoref{tab:l4_autoencoders}}
+  %   \label{fig:l4_architecture}
+  % \end{figure}
+
+    The goal of this section is understanding the behaviour of autoencoders, 
+    regarding their performance compared to regular nets, as well as interpreting
+    what they do. 
+
+    \autoref{tab:l4_autoencoders} shows that autoencoders outperform regular deep
+    feedforward networks, even when sharing the same structure. Furthermore, 
+    they offer a more efficient representation of data, which could eventually
+    used to save storage space. The main drawback is the time that
+    the layerwise greedy training takes, compared to training a simple 
+    network using backpropagation. Also, fine tuning makes a big difference in 
+    performance, particularly for deeper architectures. It is not good to skip it.
+    Very large architectures are usually trained using GPUs.
+
+    \begin{figure}[htpb]
+      \centering
+      \includegraphics[width=\linewidth]{lab4/layer_features.png}
+      \caption{Original digit (left), and the features that each autoencoders 
+        extracts from it, using the 5 level deep architecture of 
+        \autoref{tab:l4_autoencoders}. As depth increases,
+        features become more abstract and hard to understand for humans. Also,
+        their dimensionality is reduced (less pixels on the image). From left to
+        right, images correspond to autoencoders 1 to 4.}
+      \label{fig:l4_features}
+    \end{figure}
+
+    Stacked autoencoders extract abstract features from data, in a similar way
+    the brain does. The deeper the architecture, the more abstract features become.
+    \autoref{fig:l4_features} showcases this idea: the features, represented as 
+    images, that each layer obtains have no meaning for an human. This is actually
+    one of the main problems of deep learning: they often produce \emph{black box}
+    models, and we cannot understand what it actually represents. Therefore, they
+    cannot be used at applications that require transparency, like credit scoring.
+    However, this abstraction is their main advantage: as I showed in the previous
+    paragraph, it beats regular nets with the same structure. 
+
+    \begin{figure}[htb]
+      \centering
+      \hfill
+      \begin{subfigure}[t]{0.25\linewidth}
+        \includegraphics[width=1\linewidth]{lab4/weights_default.png}
+        \caption{$L2\ weight = 2 \times 10^{-3}$}
+      \end{subfigure}
+      \hfill
+      \begin{subfigure}[t]{0.245\linewidth}
+        \includegraphics[width=1\linewidth]{lab4/weights_regulariz1e-3.png}
+        \caption{$L2\ weight = 1 \times 10^{-3}$}
+      \end{subfigure}
+      \hfill
+      \begin{subfigure}[t]{0.25\linewidth}
+        \includegraphics[width=1\linewidth]{lab4/weights_regulariz5e-4.png}
+        \caption{$L2\ weight = 5 \times 10^{-4}$}
+      \end{subfigure}
+      \hfill \mbox{}
+      \caption{Weights of the first autoencoder. This plot is very analogous
+      to that of the components in \autoref{fig:l3_pc_interpret}: it displays
+      the internal abstract representation the data, but using weights instead of 
+      components.  
+      Each image is the result of a different L2 regularization weight. }
+      \label{fig:l4_weights}
+    \end{figure}
+
+    Finally, \autoref{fig:l4_weights} shows the weights of the first layer after
+    training with different L2 penalties. Higher penalties make the model simpler,
+    so weights are more similar to actual digits. Lower penalties make weights
+    have a higher variance (the model is more complex), therefore they look
+    blurrier on the right image. This
+    is analogous to the ideas I explored in the previous section, particularly 
+    on \autoref{fig:l3_pc_interpret}: each weight, or component in the case of 
+    PCA, model different characteristics of the data (cursiveness, thickness, 
+    etc.). This is also one of the reasons for the popularity of deep neural 
+    networks: they perform automatic and parametrized feature extraction and 
+    selection.
+
+    \newpage
+
+    \subsection{Convolutional Neural Networks}
+
+
 
 
 
