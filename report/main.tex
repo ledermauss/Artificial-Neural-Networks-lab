@@ -712,6 +712,33 @@
     \newpage
 
     \subsection{Convolutional Neural Networks}
+    The \texttt{CNNEx.m} script runs a convolutional net on a database with images
+    of laptops, trains and boats, and tries to classify them, as well as show their
+    internal representation. The dimension of the weights in layer 2 is [11 11 3 
+    96],  with stride [4 4] and no padding. This is the convolutional filtering 
+    layer.  The stride is the step size for 
+    traversing the input vertically and horizontally. In this case, [4 4] 
+    specifies a vertical step size of 4 and a horizontal step size of 4.
+    The first two numbers are the filter size (11x11):  width and height 
+    to scan the image, 121 pixels in total. The third number (3) is the number 
+    of channels. The image is coloured, so they are the RGB channels. 
+    The last number, 96, is the number of filters, I.e  the number of neurons 
+    that corresponds to a region of the output.  
+
+    On the second question, the fifth layer performs Pooling, using a stride of
+    [2 2] and a filter size of  [3 3], with no padding. Starting on the first 
+    layer, the input is $227 \times 227$.
+    The output after first convolution is $(Size - Filter + 2 \times Paddding)/
+    stride + 1$. So: $(227 - 11) / 4 + 1 = 55$, so there are $55 \times 55$ 
+    neurons. They go then through the pooling layer, 
+    obtaining $(55 - 3)/2 + 1 = 27$, so layer 6 expects an input of $27 \times 27$.
+
+    Applying this iteratively returns that on the last layer there are
+    $71 \times 71$ feature maps, so 5041 neurons. After the first layer there 
+    were $11 \times 11 \times 3 \times 96 =34848$, which is a big improvement.
+
+
+
 
 
 
