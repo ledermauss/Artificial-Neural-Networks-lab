@@ -25,8 +25,9 @@
 
 \renewcommand{\arraystretch}{1.25} % for tables
 
-\title{Your Paper}
-\author{You}
+\title{Artificial Neural Networks reports}
+\author{Mauro Paradela del Río - r0696150}
+\date{}
 
 \begin{document}
 \maketitle
@@ -172,8 +173,8 @@
   with 80 hidden units: nets with neurons over that threshold 
   are overparametrized, since their MSE on the test set starts to decrease. 
   If there was no validation set, for 100 and 120 neurons the MSE on 
-  train set would be way higher than that of test set, as
-  \autoref{fig:validation} shows. On the other hand, nets with few hidden units
+  train set would be way lower than that of test set, as
+  \autoref{fig:overfit} shows. On the other hand, nets with few hidden units
   do not even learn the model, and can have higher train error than test, as in
   \autoref{fig:underfit}.
 
@@ -294,7 +295,7 @@
   First, the network receives an input consisting on the initial attractors. 
   In this case, the attractors are 9 handwritten digits, scanned as $15\times14$
   pixel images. So, the network has 240 features, as many as the attractors.
-  The network can store up to $N / (4 \times log(N)$ patterns, $N = 240$. That
+  The network can store up to $N / (4 \times log(N))$ patterns, $N = 240$. That
   result is 10.86, so the net should be able to store all of them without
   getting spurious patterns.
   \begin{figure}[h]
@@ -309,7 +310,7 @@
     \centering
     \begin{subfigure}[c]{0.07\linewidth}
       \includegraphics[width=\linewidth,height=6.1cm]{lab2/digits/noisy.png}
-      \caption{Noisy}
+      \caption{Nois}
     \end{subfigure}
     \hfill
     \begin{subfigure}[c]{0.07\linewidth}
@@ -429,7 +430,7 @@
 
 
   \newpage
-\section{Unsupervised Learning}
+\section{Lab 3: Unsupervised Learning}
   \subsection{Principal Component Analysis}
   \begin{figure}[h]
     \begin{adjustwidth}{-1cm}{-1cm}
@@ -501,7 +502,7 @@
   As more components are added, reconstruction becomes more accurate.  The last 
   components model the noise, the particularities of each data point. Since
   most variance lies below 50 PC, any reconstruction with more PC delivers
-  almost the same result, there is little margin of improvement. With
+  almost the same result, there is little margin of improvement. 
   With 256 PC the recovered image is exactly the same, and the \emph{MSE} is 0.
   %% maybe remove this
   There is a mathematical proof: being data $X \in {\rm I\!R}^{d \times N}$,
@@ -575,14 +576,14 @@
   SOM deliver meaningful representations of the data (vector quantization) using
   competitive learning to make their neurons learn the data distribution. 
   Basically, as a neuron “wins” over the others for a data point, its weight is
-  updated so it is closer to the input, according to the Konohen rule. In this 
-  rule The new state depends on both the previous state and the input, and each
+  updated so it is closer to the input, according to the Konohen rule. 
+  The new state depends on both the previous state and the input, and each
   has a different weight (parameter $\alpha$). Besides, neurons also pull their
   neighbours, defined by a radius on some distance metric and grid disposition. 
   \autoref{fig:l3_hex_grid} showcases the learning process of the SOM. Furthermore,
   they can also be used for clustering, with as many clusters as neurons. 
   \autoref{tab:l3_som_grid} compares clustering performance with different 
-  configurations.
+  configurations, using 3 clusters.
 
   \begin{table}[h]
     \centering
@@ -602,157 +603,256 @@
     \label{tab:l3_som_grid}
   \end{table}
 
-  \section{Lab 4}
-    \subsection{Stacked autoencoders}
-    \begin{table}[h]
-      \centering
-      \begin{tabular}{@{}lrrrrr@{}}
-        \toprule
-        && \multicolumn {2}{c}{Accuracy on Autoencoder} \\
-        \cmidrule{3-4} 
-        Layers & Hidden units & Before tuning & After tuning & 
-        Regular net accuracy & \textbf{Improvement} \\
-        \midrule
-        2   & [100]           &  98.38   &  98.92  &   97.60  &  \textbf{1.35}\% \\
-        3   & [100 81]        &  78.82   &  99.92  &   96.68  &  \textbf{3.35}\% \\
-        4   & [100 81 64]     &  38.22   &  99.78  &   96.92  &  \textbf{2.97}\% \\
-        5   & [100 81 64 49]  &  21.50   &  99.40  &   97.58  &  \textbf{1.87}\% \\
-        \bottomrule
-      \end{tabular} 
-      \caption{Evaluation of different deep architectures. \emph{Hidden layers} 
-      indicates the neurons on each layer (from the first to the last), on both
-      the autoencoders and the regular feed forward net. The final column shows
-      the improvement of the stacked architecture over the feed forward net,
-      in digits classification. For each row, both type of nets share the same
-      structure}
-      \label{tab:l4_autoencoders}
-    \end{table}
-    % maybe remove this
-  % \begin{figure}[htpb]
-  %   \centering
-  %   \includegraphics[width=\linewidth]{lab4/deep_architecture.png}
-  %   \caption{5 layer architecture of autoencoders, corresponding to last row
-  %   of \autoref{tab:l4_autoencoders}}
-  %   \label{fig:l4_architecture}
-  % \end{figure}
+\section{Lab 4}
+  \subsection{Stacked autoencoders}
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{@{}lrrrrr@{}}
+      \toprule
+      && \multicolumn {2}{c}{Accuracy on Autoencoder} \\
+      \cmidrule{3-4} 
+      Layers & Hidden units & Before tuning & After tuning & 
+      Regular net accuracy & \textbf{Improvement} \\
+      \midrule
+      2   & [100]           &  98.38   &  98.92  &   97.60  &  \textbf{1.35}\% \\
+      3   & [100 81]        &  78.82   &  99.92  &   96.68  &  \textbf{3.35}\% \\
+      4   & [100 81 64]     &  38.22   &  99.78  &   96.92  &  \textbf{2.97}\% \\
+      5   & [100 81 64 49]  &  21.50   &  99.40  &   97.58  &  \textbf{1.87}\% \\
+      \bottomrule
+    \end{tabular} 
+    \caption{Evaluation of different deep architectures. \emph{Hidden layers} 
+    indicates the neurons on each layer (from the first to the last), on both
+    the autoencoders and the regular feed forward net. The final column shows
+    the improvement of the stacked architecture over the feed forward net,
+    in digits classification. For each row, both type of nets share the same
+    structure}
+    \label{tab:l4_autoencoders}
+  \end{table}
+  % maybe remove this
+  \begin{figure}[htpb]
+    \centering
+    \includegraphics[width=\linewidth]{lab4/deep_architecture.png}
+    \caption{5 layer architecture of autoencoders, corresponding to last row
+    of \autoref{tab:l4_autoencoders}}
+    \label{fig:l4_architecture}
+  \end{figure}
 
-    The goal of this section is understanding the behaviour of autoencoders, 
-    regarding their performance compared to regular nets, as well as interpreting
-    what they do. 
+  The goal of this section is understanding the behaviour of autoencoders, 
+  regarding their performance compared to regular nets, as well as interpreting
+  what they do. 
 
-    \autoref{tab:l4_autoencoders} shows that autoencoders outperform regular deep
-    feedforward networks, even when sharing the same structure. Furthermore, 
-    they offer a more efficient representation of data, which could eventually
-    used to save storage space. The main drawback is the time that
-    the layerwise greedy training takes, compared to training a simple 
-    network using backpropagation. Also, fine tuning makes a big difference in 
-    performance, particularly for deeper architectures. It is not good to skip it.
-    Very large architectures are usually trained using GPUs.
+  \autoref{tab:l4_autoencoders} shows that autoencoders outperform regular deep
+  feedforward networks, even when sharing the same structure. Furthermore, 
+  they offer a more efficient representation of data, which could eventually
+  used to save storage space. The main drawback is the time that
+  the layerwise greedy training takes, compared to training a simple 
+  network using backpropagation. Also, fine tuning makes a big difference in 
+  performance, particularly for deeper architectures. It is not good to skip it.
+  Very large architectures are usually trained using GPUs.
 
-    \begin{figure}[htpb]
-      \centering
-      \includegraphics[width=\linewidth]{lab4/layer_features.png}
-      \caption{Original digit (left), and the features that each autoencoders 
-        extracts from it, using the 5 level deep architecture of 
-        \autoref{tab:l4_autoencoders}. As depth increases,
-        features become more abstract and hard to understand for humans. Also,
-        their dimensionality is reduced (less pixels on the image). From left to
-        right, images correspond to autoencoders 1 to 4.}
-      \label{fig:l4_features}
-    \end{figure}
+  \begin{figure}[htpb]
+    \centering
+    \includegraphics[width=\linewidth]{lab4/layer_features.png}
+    \caption{Original digit (left), and the features that each autoencoders 
+      extracts from it, using the 5 level deep architecture of 
+      \autoref{tab:l4_autoencoders}. As depth increases,
+      features become more abstract and hard to understand for humans. Also,
+      their dimensionality is reduced (less pixels on the image). From left to
+      right, images correspond to autoencoders 1 to 4.}
+    \label{fig:l4_features}
+  \end{figure}
 
-    Stacked autoencoders extract abstract features from data, in a similar way
-    the brain does. The deeper the architecture, the more abstract features become.
-    \autoref{fig:l4_features} showcases this idea: the features, represented as 
-    images, that each layer obtains have no meaning for an human. This is actually
-    one of the main problems of deep learning: they often produce \emph{black box}
-    models, and we cannot understand what it actually represents. Therefore, they
-    cannot be used at applications that require transparency, like credit scoring.
-    However, this abstraction is their main advantage: as I showed in the previous
-    paragraph, it beats regular nets with the same structure. 
+  Stacked autoencoders extract abstract features from data, in a similar way
+  the brain does. The deeper the architecture, the more abstract features become.
+  \autoref{fig:l4_features} showcases this idea: the features, represented as 
+  images, that each layer obtains have no meaning for an human. This is actually
+  one of the main problems of deep learning: they often produce \emph{black box}
+  models, and we cannot understand what it actually represents. Therefore, they
+  cannot be used at applications that require transparency, like credit scoring.
+  However, this abstraction is their main advantage: as I showed in the previous
+  paragraph, it beats regular nets with the same structure. 
 
-    \begin{figure}[htb]
-      \centering
-      \hfill
-      \begin{subfigure}[t]{0.25\linewidth}
-        \includegraphics[width=1\linewidth]{lab4/weights_default.png}
-        \caption{$L2\ weight = 2 \times 10^{-3}$}
-      \end{subfigure}
-      \hfill
-      \begin{subfigure}[t]{0.245\linewidth}
-        \includegraphics[width=1\linewidth]{lab4/weights_regulariz1e-3.png}
-        \caption{$L2\ weight = 1 \times 10^{-3}$}
-      \end{subfigure}
-      \hfill
-      \begin{subfigure}[t]{0.25\linewidth}
-        \includegraphics[width=1\linewidth]{lab4/weights_regulariz5e-4.png}
-        \caption{$L2\ weight = 5 \times 10^{-4}$}
-      \end{subfigure}
-      \hfill \mbox{}
-      \caption{Weights of the first autoencoder. This plot is very analogous
-      to that of the components in \autoref{fig:l3_pc_interpret}: it displays
-      the internal abstract representation the data, but using weights instead of 
-      components.  
-      Each image is the result of a different L2 regularization weight. }
-      \label{fig:l4_weights}
-    \end{figure}
+  \begin{figure}[htb]
+    \centering
+    \hfill
+    \begin{subfigure}[t]{0.25\linewidth}
+      \includegraphics[width=1\linewidth]{lab4/weights_default.png}
+      \caption{$L2\ weight = 2 \times 10^{-3}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.245\linewidth}
+      \includegraphics[width=1\linewidth]{lab4/weights_regulariz1e-3.png}
+      \caption{$L2\ weight = 1 \times 10^{-3}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.25\linewidth}
+      \includegraphics[width=1\linewidth]{lab4/weights_regulariz5e-4.png}
+      \caption{$L2\ weight = 5 \times 10^{-4}$}
+    \end{subfigure}
+    \hfill \mbox{}
+    \caption{Weights of the first autoencoder. This plot is very analogous
+    to that of the components in \autoref{fig:l3_pc_interpret}: it displays
+    the internal abstract representation the data, but using weights instead of 
+    components.  
+    Each image is the result of a different L2 regularization weight. }
+    \label{fig:l4_weights}
+  \end{figure}
 
-    Finally, \autoref{fig:l4_weights} shows the weights of the first layer after
-    training with different L2 penalties. Higher penalties make the model simpler,
-    so weights are more similar to actual digits. Lower penalties make weights
-    have a higher variance (the model is more complex), therefore they look
-    blurrier on the right image. This
-    is analogous to the ideas I explored in the previous section, particularly 
-    on \autoref{fig:l3_pc_interpret}: each weight, or component in the case of 
-    PCA, model different characteristics of the data (cursiveness, thickness, 
-    etc.). This is also one of the reasons for the popularity of deep neural 
-    networks: they perform automatic and parametrized feature extraction and 
-    selection.
+  Finally, \autoref{fig:l4_weights} shows the weights of the first layer after
+  training with different L2 penalties. Higher penalties make the model simpler,
+  so weights are more similar to actual digits. Lower penalties make weights
+  have a higher variance (the model is more complex), therefore they look
+  blurrier on the right image. This
+  is analogous to the ideas I explored in the previous section, particularly 
+  on \autoref{fig:l3_pc_interpret}: each weight, or component in the case of 
+  PCA, model different characteristics of the data (cursiveness, thickness, 
+  etc.). This is also one of the reasons for the popularity of deep neural 
+  networks: they perform automatic and parametrized feature extraction and 
+  selection.
 
-    \newpage
+  \subsection{Convolutional Neural Networks}
+  The \texttt{CNNEx.m} script runs a convolutional net on a database with images
+  of laptops, trains and boats, and tries to classify them, as well as show their
+  internal representation. The dimension of the weights in layer 2 is [11 11 3 
+  96],  with stride [4 4] and no padding. This is the convolutional filtering 
+  layer.  The stride is the step size for 
+  traversing the input vertically and horizontally. In this case, [4 4] 
+  specifies a vertical step size of 4 and a horizontal step size of 4.
+  The first two numbers are the filter size (11x11):  width and height 
+  to scan the image, 121 pixels in total. The third number (3) is the number 
+  of channels. The image is coloured, so they are the RGB channels. 
+  The last number, 96, is the number of filters, I.e  the number of neurons 
+  that corresponds to a region of the output.  
 
-    \subsection{Convolutional Neural Networks}
-    The \texttt{CNNEx.m} script runs a convolutional net on a database with images
-    of laptops, trains and boats, and tries to classify them, as well as show their
-    internal representation. The dimension of the weights in layer 2 is [11 11 3 
-    96],  with stride [4 4] and no padding. This is the convolutional filtering 
-    layer.  The stride is the step size for 
-    traversing the input vertically and horizontally. In this case, [4 4] 
-    specifies a vertical step size of 4 and a horizontal step size of 4.
-    The first two numbers are the filter size (11x11):  width and height 
-    to scan the image, 121 pixels in total. The third number (3) is the number 
-    of channels. The image is coloured, so they are the RGB channels. 
-    The last number, 96, is the number of filters, I.e  the number of neurons 
-    that corresponds to a region of the output.  
+  On the second question, the fifth layer performs Pooling, using a stride of
+  [2 2] and a filter size of  [3 3], with no padding. Starting on the first 
+  layer, the input is $227 \times 227$.
+  The output after first convolution is $(Size - Filter + 2 \times Paddding)/
+  stride + 1$. So: $(227 - 11) / 4 + 1 = 55$, so there are $55 \times 55$ 
+  neurons. They go then through the pooling layer, 
+  obtaining $(55 - 3)/2 + 1 = 27$, so layer 6 expects an input of $27 \times 27$.
 
-    On the second question, the fifth layer performs Pooling, using a stride of
-    [2 2] and a filter size of  [3 3], with no padding. Starting on the first 
-    layer, the input is $227 \times 227$.
-    The output after first convolution is $(Size - Filter + 2 \times Paddding)/
-    stride + 1$. So: $(227 - 11) / 4 + 1 = 55$, so there are $55 \times 55$ 
-    neurons. They go then through the pooling layer, 
-    obtaining $(55 - 3)/2 + 1 = 27$, so layer 6 expects an input of $27 \times 27$.
+  Applying this iteratively returns that on the last layer there are
+  $71 \times 71$ feature maps, so 5041 neurons. After the first layer there 
+  were $11 \times 11 \times 3 \times 96 =34848$, which is a big improvement.
+  \newpage
 
-    Applying this iteratively returns that on the last layer there are
-    $71 \times 71$ feature maps, so 5041 neurons. After the first layer there 
-    were $11 \times 11 \times 3 \times 96 =34848$, which is a big improvement.
+\section{Final project}
+My name is Mauro Paradela del Río, student number r0696150, Master in Artificial
+Intelligence. My data has been generated using:
 
+$$ Tnew = (9T1 + 6T2 + 6T3 + 5T4 + 1T5) / (9 + 6 + 6+ 5 + 1) $$
 
+  \subsection{Regression}
+  For this exercise I have to estimate a function generated using my student
+  number, using the formula above. The result of this operation is a combination
+  of non linear functions, that is also non linear. The result is plotted in 
+  \autoref{fig:project_dataset}.
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\linewidth]{project/dataset.png}
+    \caption{Function produced using my student number}
+    \label{fig:project_dataset}
+  \end{figure}
+  \begin{table}[h!]
+    \begin{tabular}{@{}lrrrrr@{}}
+      \toprule
+      \multicolumn{5}{c}{\textbf{tansig}} \\
+      N  &   $R_t$  &  $MSE_t$ & $MSE_{tr}$ &  Epch  & T(s)\\
+      \midrule
+      25   & 0.99   &   \num{9.79e-05}  & \num{2.39e-05}  &  169  &  11.08 \\
+      50   & 0.99   &   \num{1.67e-05}  & \num{6.90e-06}  &  171  &  10.64 \\
+      100  & 0.99   &   \num{1.05e-05}  & \num{1.34e-06}  &  200  &  20.15 \\
+      150  & 0.99   &   \num{2.73e-06}  & \num{8.29e-07}  &  200  &  16.54 \\
+      200  & 0.99   &   \num{5.38e-06}  & \num{1.71e-06}  &  200  &  12.55 \\
+      250  & 0.99   &   \num{1.40e-05}  & \num{3.42e-06}  &  200  &  12.49 \\
+      300  & 0.99   &   \num{1.35e-05}  & \num{2.29e-06}  &  198  &  12.54 \\
+      \bottomrule
+    \end{tabular} 
+    \hfill
+    \begin{tabular}{@{}rrrrr@{}}
+      \toprule
+      \multicolumn{5}{c}{\textbf{logsig}} \\
+      $R_t$  &  $MSE_t$ & $MSE_{tr}$ &  Epch  & T(s)\\
+      \midrule
+       0.99   &   \num{4.53e-06}  & \num{1.46e-06}  &  200  &  16.19 \\
+       0.99   &   \num{6.11e-06}  & \num{1.50e-06}  &  200  &  16.87 \\
+       0.99   &   \num{9.63e-06}  & \num{6.17e-06}  &  160  &  11.55 \\
+       0.99   &   \num{1.45e-05}  & \num{4.80e-06}  &  172  &  11.96 \\
+       0.99   &   \num{1.45e-04}  & \num{5.89e-06}  &  167  &  15.66 \\
+       0.99   &   \num{5.07e-05}  & \num{3.24e-05}  &  165  &  12.49 \\
+       0.99   &   \num{3.79e-06}  & \num{1.14e-06}  &  200  &  15.62 \\
+      \bottomrule
+    \end{tabular} 
+    \caption{Metrics on different network configurations, always with
+      one hidden layer and trained using \texttt{trainlm}. I compare two different
+      transfer functions on the first layer. All results are the average
+      of 20 runs.
+      $N$ stands for the hidden units,$t$ stands for $test$ and
+      $tr$ stands for training. It looks like any model is good for this dataset.}
+    \label{fig:project_feedforward}
+  \end{table}
 
+  \autoref{fig:project_feedforward} shows a comparison of different network
+  architectures, focusing particularly on the transfer function and the number
+  of hidden units. For the experiments I have taken 1000 points as validation 
+  set, another 1000 for training and 1000 for testing, avoiding overlapping 
+  between them. Apparently, a simple network of 25 hidden units with any
+  transfer function produces already a very good result: on the train set, MSE
+  is below \num{1e-4}, and the correlation with that same set is above 0.99.
+  The only remarkable fact is that \texttt{tansig} converges slightly faster than
+  \texttt{logsig}, but error seems to be higher. \autoref{fig:l5_mse_curves}
+  showcases it on the MSE curve evolution: \texttt{logisg} overcomes \texttt{tansig}
+  at 50 epochs, but takes more iterations to reach its best performance. In contrast,
+  The former is already semi-optimal at 20 epochs, the latter descends steeply at 30.
 
+  I believe that the non linear structure of the function is well captured by the 
+  net. Furthermore, since all values are positive, \texttt{logsig}
+  approximates it very well. A way of improving the results would be training
+  under Bayesian Optimization: since so few neurons are required, it is easy
+  to overparametrize. Bayesian optimization would reduce overfitting in that 
+  case.
 
+  \begin{figure}[ht]
+    \centering
+    \begin{subfigure}[t]{0.35\linewidth}
+      \includegraphics[width=1\linewidth]{./project/tansig_MSE.png}
+      \caption{\texttt{tansig}}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.35\linewidth}
+      \includegraphics[width=1\linewidth]{./project/logsig_MSE.png}
+      \caption{\texttt{logsig}}
+    \end{subfigure}
+    \caption{MSE curve on all sets, for different transfer functions on the 
+    first layer. There are 25 hidden units, trained using the \texttt{trainlm}
+  algorithm. Both behave differently: \texttt{tansig} converges faster, but
+    \texttt{logsig} achieves better results.}
+    \label{fig:l5_mse_curves}
+  \end{figure}
 
+  \begin{figure}[htb]
+    \begin{adjustwidth}{-1.1cm}{-1.1cm}
+    \centering
+    \begin{subfigure}[t]{0.3\linewidth}
+      \includegraphics[width=1\linewidth]{./project/scatter_ytest_green.png}
+      \caption{Test set}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.3\linewidth}
+      \includegraphics[width=1\linewidth]{./project/scatter_ysim.png}
+      \caption{Prediction}
+      \label{fig:overfit}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.3\linewidth}
+      \includegraphics[width=1\linewidth]{./project/sim_and_test.png}
+      \caption{Both together (interpolated)}
+      \label{fig:underfit}
+    \end{subfigure}
+    \end{adjustwidth}
+    \caption{Test set (green) and network prediction (red) comparison. 25 hidden units,
+      \texttt{logsig} transfer function. MSE on this set is below \num{1e-5}}
+    \label{fig:l5_regression_test}
+  \end{figure}
 
-
-
-    
-    
-    
-    
-    
-    
-    
-    
     
 \end{document}
 
