@@ -16,7 +16,6 @@
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
-\usepackage{hyperref}
 \usepackage{subcaption}
 \usepackage{multirow}
 \usepackage{arydshln}  % dashed lines
@@ -854,11 +853,39 @@ $$ Tnew = (9T1 + 6T2 + 6T3 + 5T4 + 1T5) / (9 + 6 + 6+ 5 + 1) $$
   \end{figure}
 
   \subsection{Classification}
-  \begin{table}[h]
+  In this part of the assignment I have to build a feed forward neural network to
+  classify wine into categories. The last number of my student ID is 0, so I have
+  a binary problem with 2198 data points on the negative class (label 6) and 
+  1457 data points on the positive class (label 5), taken from the white wine 
+  subset. 
+
+  For this task I have focused on Matlab's \emph{patternnet}: a feed forward net
+  with a \emph{softmax} function on the output layer. That way the network
+  results ranges between 0 and 1 for each output neuron. When using a 
+  \emph{one-hot} encoding for the classes, they can be
+  interpreted as probabilities of belonging to one class or the other. Therefore,
+  in this particular problem all target values are bidimensional vectors, either
+  [0 1] or [1 0].
+
+  \paragraph{Choosing the optimal architecture} On 
+  \autoref{tab:l5_classif_algorithms} I have tested different training algorithms
+  for pattern estimation. Some of them are new, like Scaled Conjugated Gradient
+  (\emph{trainscg}) and Resilient Backpropagation (\emph{trainrp}). The results
+  show once again that Levenberg-Marquardt delivers the best results. However,
+  this time it is by far the slowest algorithm: it takes up to 50 times more
+  then \emph{trainscg} when using 80 hidden units, for example. Even though
+  it does not calculate the whole Hessian matrix, the lm is too slow
+  when doing pattern classification, even though it was the best performing
+  algorithm for function estimation (see \autoref{tab:train_algs}).
+  The figure also shows that 5 neurons are
+  enough for delivering a decent CCR, although it does not overparametrize very
+  fast: the value keeps constant for the configurations I have tested.
+
+  \begin{table}[htb]
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{@{}lrrrrrrrrrrrrrrrrrrrr@{}}
     \toprule
-    \multirow{2}{*}{Nhid}&& \multicolumn{3}{c}{\textbf{trainscg}} && \multicolumn{3}{c}{\textbf{trainrp}} &&
+    \multirow{2}{*}{\emph{Nhid}}&& \multicolumn{3}{c}{\textbf{trainscg}} && \multicolumn{3}{c}{\textbf{trainrp}} &&
       \multicolumn{3}{c}{\textbf{traingd}} && \multicolumn{3}{c}{\textbf{trainlm}} &&
       \multicolumn{3}{c}{\textbf{trainbfg}} \\
  && $CCR$ & $Epch$ & $T(s)$ && $CCR$ & $Epch$ & $T(s)$ && $CCR$ & $Epch$ & $T(s)$ && $CCR$ & $Epch$ & $T(s)$ && $CCR$ & $Epch$ & $T(s)$ \\
@@ -871,11 +898,95 @@ $$ Tnew = (9T1 + 6T2 + 6T3 + 5T4 + 1T5) / (9 + 6 + 6+ 5 + 1) $$
  80 && 0.70 & 18 & 0.90 && 0.71 & 44 & 1.11 && 0.60 & 478 & 10.10 && 0.75 & 10 & 52.12 && 0.70 & 17 & 39.84 \\
       \bottomrule
   \end{tabular}}
+  \caption{Comparing different units on the hidden layer and training methods for
+  the feedforward \emph{patternnet} on the white wine dataset. This time, the
+most accurate algorithm is not the fastest; quite the opposite. \emph{CCR} stands
+for Correctly Classfied Data on the validation set, and \emph{Epch} for epoch 
+of convergence in the training phase. Validation and test set are each 15\% of
+the data points.}  
+  \label{tab:l5_classif_algorithms}
   \end{table}
 
+  \newpage
+  \paragraph{Dimensionality reduction} using linear PCA has two potential benefits:
+  it can save memory and computations by reducing the size of the data, and it
+  can find directions in which classification can deliver better results. According
+  to \autoref{fig:l5_PC}, 3 components are already a very good summarization of
+  the data: they contain most (almost 100\%) of the variance, and reconstruction
+  error using 3 components is almost 0. So, the first goal is achieved. However,
+  classification does not improve: as \autoref{tab:l5_transfer_PC}, no combination
+  of hidden units and transfer functions outperforms the results from 
+  \autoref{tab:l5_classif_algorithms}, in this case for Resilient Backpropagation.
+  I have even tried different transfer functions on the first layer, but accuracy
+  is on all of them around 15\% lower than it was. I believe that PCA is not finding
+  an optimal direction where classes can be separated well. 
+  \autoref{fig:l5_wine_gmatrix} proofs it: in all the extracted 3 components 
+  both classes have a large overlapping.
 
+  I would like to point out that I have not changed the transfer function on the
+  last layer (\texttt{softmax}) because it is the right one for a classification 
+  task. A linear activation function would deliver values over 1 and below 0, and
+  \texttt{logsig} is not suitable for multiclass problems. 
 
+  \begin{figure}[ht]
+    \centering
+    \begin{subfigure}[t]{0.4\linewidth}
+      \includegraphics[width=1\linewidth]{./project/wine_eigvals.png}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.4\linewidth}
+      \includegraphics[width=1\linewidth]{./project/wine_rec_MSE.png}
+    \end{subfigure}
+    \caption{Scaled eigenvalues for the white wine dataset (left) and
+    reconstruction MSE with increasing number of components. Clearly 3
+    components make a good summarization of the data; they account for more than
+    95\% of the variance}
+    \label{fig:l5_PC}
+  \end{figure}
 
+  This is not necessary a problem: after all, data is now 3.5 times smaller. 
+  Furthermore, when using 6 components (half of the original 11), classification
+  accuracy is at 69\%. That means that there are still many features in the data
+  that are not relevant for the model, and can be pruned out. So it is possible
+  to achieve a good compromise between performance and data compression.
+
+  Finally, I would like to point out that I have achieved significant improvements
+  when making the net deeper. Using the same configurations as 
+  \autoref{tab:l5_transfer_PC}, and [10 5] hidden units in each layer, I already
+  achieved 68\% $CCR$ with 3 PC. This improvement happened on all the settings, 
+  but only with two layers. With more layers my model performed worse than using only
+  one, not even delivering the majority class.
+
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{@{}lrrrrrrrrrrrr@{}}
+      \toprule
+      \multirow{2}{*}{\emph{Nhid}}&& \multicolumn{2}{c}{\texttt{logsig}} &&
+        \multicolumn{2}{c}{\texttt{tansig}} && \multicolumn{2}{c}{\texttt{purelin}} 
+        && \multicolumn{2}{c}{\texttt{softmax}} \\
+      && $CCR$ & $T(s)$ && $CCR$ & $T(s)$ && $CCR$ & $T(s)$ && $CCR$ & $T(s)$ \\
+      \midrule
+       5 && 0.62 & 0.27 && 0.61 & 0.19 && 0.60 & 0.15 && 0.62 & 0.23 \\
+      10 && 0.61 & 0.23 && 0.62 & 0.22 && 0.61 & 0.12 && 0.61 & 0.31 \\
+      20 && 0.62 & 0.37 && 0.62 & 0.27 && 0.60 & 0.15 && 0.62 & 0.34 \\
+      40 && 0.62 & 0.39 && 0.61 & 0.55 && 0.61 & 0.27 && 0.62 & 0.82 \\
+      60 && 0.62 & 0.52 && 0.62 & 0.61 && 0.61 & 0.32 && 0.61 & 1.39 \\
+      80 && 0.62 & 0.63 && 0.62 & 0.81 && 0.61 & 0.36 && 0.62 & 2.31 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Classification performance on the reduced white wine dataset (3 PC),
+    using a \emph{patternnet} with one hidden layer and trained with 
+Resilient Backpropagation.}
+  \label{tab:l5_transfer_PC}
+  \end{table}
+
+  \begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.7\linewidth]{./project/wine_gplot.png}
+    \caption{Gmatrix plot of the reduced white wine dataset. No component
+    separates well the classes. Class 0 corresponds to negative class,
+  class 1 to the positive 1.}
+    \label{fig:l5_wine_gmatrix}
+  \end{figure}
     
 \end{document}
 
