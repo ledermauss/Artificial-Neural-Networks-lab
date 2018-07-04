@@ -726,17 +726,29 @@
   On the second question, the fifth layer performs Pooling, using a stride of
   [2 2] and a filter size of  [3 3], with no padding. Starting on the first 
   layer, the input is $227 \times 227$.
-  The output after first convolution is $(Size - Filter + 2 \times Paddding)/
-  stride + 1$. So: $(227 - 11) / 4 + 1 = 55$, so there are $55 \times 55$ 
+  The output after first convolution is: 
+  
+  $$\frac{(Size - Filter + 2 \times Paddding)}{stride} + 1$$
+  
+  So: $(227 - 11) / 4 + 1 = 55$, so there are $55 \times 55$ 
   neurons. They go then through the pooling layer, 
   obtaining $(55 - 3)/2 + 1 = 27$, so layer 6 expects an input of $27 \times 27$.
 
   Applying this iteratively returns that on the last layer there are
   $71 \times 71$ feature maps, so 5041 neurons. After the first layer there 
-  were $11 \times 11 \times 3 \times 96 =34848$, which is a big improvement.
-  \newpage
+  were $11 \times 11 \times 3 \times 96 =34848$, which is a big improvement. These
+  are all fed to the final classification layer, a softmax function with 1000 neurons
+  (classes) to output.
 
-\section{Final project}
+  \begin{figure}[b]
+    \centering
+    \includegraphics[width=0.6\linewidth]{./lab4/cnn_layers.png}
+    \caption{The architecture from the covnet.}
+  \end{figure}
+
+
+  \newpage
+\section{Final project 1: regression and classification with MLP}
 My name is Mauro Paradela del Río, student number r0696150, Master in Artificial
 Intelligence. My data has been generated using:
 
@@ -956,7 +968,7 @@ the data points.}
   but only with two layers. With more layers my model performed worse than using only
   one, not even delivering the majority class.
 
-  \begin{table}[h]
+  \begin{table}[p]
     \centering
     \begin{tabular}{@{}lrrrrrrrrrrrr@{}}
       \toprule
@@ -979,7 +991,7 @@ Resilient Backpropagation.}
   \label{tab:l5_transfer_PC}
   \end{table}
 
-  \begin{figure}[htpb]
+  \begin{figure}[p]
     \centering
     \includegraphics[width=0.7\linewidth]{./project/wine_gplot.png}
     \caption{Gmatrix plot of the reduced white wine dataset. No component
@@ -987,6 +999,75 @@ Resilient Backpropagation.}
   class 1 to the positive 1.}
     \label{fig:l5_wine_gmatrix}
   \end{figure}
+
+\newpage
+\section{Final Project 2: Hopfield Networks for character recognition}
+The goal of this section is investigating the capabilities of Hopfield networks
+for character recognition. For this purpose, I have created a collection of
+characters made by the 26 capital letters of the alphabet, plus the 10 than
+make up my name and surnames. I am Mauro Paradela del Río, that means: m, a, u, r, o,
+p, d, e, l, i. This letters are displayed in \autoref{fig:10letters}. They are stored
+as figures of size $5 \times 7$.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.5\linewidth]{./project/letters/10letters.png}
+  \caption{First 10 stored characters, corresponding to the 10 different letters
+  in both my name and last name.}
+  \label{fig:10letters}
+\end{figure}
+
+\paragraph{Task 1} I performed 50 different experiments flipping random pixels 
+on the characters, and I iterated the network 100 times on each. I never found 
+spurious states: I could
+always recall an attractor of the net. However, some of my letters were very similar,
+particularly the $u$ and the $o$: depending on the noise, one of those two letters
+could end up resembling the other. An example of this is shown in 
+\autoref{fig:l5_noise}. This happens often because of the low dimensionality of
+the collection: with just 35 pixels, it is very easy that the characters correlate.
+Flipping 3 means modifying almost 10\% of the data.
+
+This does not mean that there are not spurious patterns, I probably was just 
+(un)lucky and did not find them. The critical load of
+a Hopfield network (storable patterns P) is given by:
+
+$$ P < \frac{N}{4ln(N)} $$
+
+Being N the number of neurons and P the storable patterns. For $N=35$, P is 
+smaller than 3.
+
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./project/letters/attractors.png}
+  \caption{First 5 letters, stored as attractors, and their corrupted version. 
+  On the right column, the retrieved character. Note that the last character
+(the o) is wrong.}
+  \label{fig:l5_noise}
+\end{figure}
+
+\paragraph{Task 2} \autoref{fig:spurious} shows the count of wrong pixels retrieved
+over different numbers of stored patterns. I started with 1 and went up to 25 
+patterns, and I let the net converge to a stable state (at least 100 iterations). 
+From this and other runs it seems that the net starts to make mistakes between
+8 and 10 patterns. Therefore, I estimate the empirical critical load capacity
+of the net as 8. This is higher than the theoretical threshold from before:
+probably at that point attractors are not so similar, and the network finds
+it easy to differentiate between them.
+
+\paragraph{Task 3} It is not possible to store 25 characters using just 35 neurons, 
+even without inversions. Using a regular Hopfield Network, it would be necessary
+to increase the number of neurons to at least 290.
+
+ 
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.5\linewidth]{./project/letters/pattern_error.png}
+  \caption{Error on the retrieved pixels over all the stored patterns}
+  \label{fig:spurious}
+\end{figure}
+
     
 \end{document}
 
